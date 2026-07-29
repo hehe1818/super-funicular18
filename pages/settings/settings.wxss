@@ -1,0 +1,319 @@
+/* settings.wxss */
+
+page {
+  height: 100vh;
+  background: #f5f7fa;
+}
+
+.page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f5f7fa;
+}
+
+/* ============ 自定义顶部标题栏 ============ */
+.custom-nav {
+  width: 100%;
+  height: calc(88rpx + env(safe-area-inset-top));
+  padding-top: env(safe-area-inset-top);
+  background: #fff;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+  flex-shrink: 0;
+}
+
+.scrollarea {
+  flex: 1;
+  width: 100%;
+}
+
+.container {
+  padding: 24rpx;
+  padding-bottom: 160rpx;
+  min-height: 100%;
+}
+
+.nav-content {
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-icon {
+  font-size: 36rpx;
+  margin-right: 12rpx;
+}
+
+.nav-title {
+  font-size: 34rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+/* ============ 用户信息卡片 ============ */
+.user-card {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 40rpx 30rpx;
+  border-radius: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 12rpx 40rpx rgba(102, 126, 234, 0.3);
+}
+
+.user-card:active {
+  opacity: 0.9;
+}
+
+.user-avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  border: 4rpx solid rgba(255, 255, 255, 0.5);
+  margin-right: 24rpx;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.default-avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 24rpx;
+  flex-shrink: 0;
+}
+
+.avatar-icon {
+  font-size: 60rpx;
+}
+
+.user-detail {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.user-nickname {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 12rpx;
+}
+
+.user-status {
+  display: flex;
+  align-items: center;
+}
+
+.status-dot {
+  width: 14rpx;
+  height: 14rpx;
+  border-radius: 50%;
+  margin-right: 10rpx;
+}
+
+.status-dot.online {
+  background-color: #4ade80;
+  box-shadow: 0 0 10rpx rgba(74, 222, 128, 0.5);
+}
+
+.status-dot.offline {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.status-text {
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.arrow {
+  font-size: 40rpx;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* ============ 信息区块 ============ */
+.info-section {
+  background: #fff;
+  border-radius: 32rpx;
+  padding: 28rpx 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 24rpx rgba(102, 126, 234, 0.08);
+}
+
+.section-title {
+  font-size: 26rpx;
+  color: #999;
+  margin-bottom: 20rpx;
+  padding-left: 10rpx;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
+
+.item-label {
+  font-size: 28rpx;
+  color: #333;
+}
+
+.item-value-wrapper {
+  display: flex;
+  align-items: center;
+  max-width: 60%;
+}
+
+.item-value {
+  font-size: 26rpx;
+  color: #666;
+  font-family: monospace;
+  word-break: break-all;
+  text-align: right;
+  margin-right: 10rpx;
+}
+
+.item-value.status-online {
+  color: #4ade80;
+}
+
+.copy-icon {
+  font-size: 24rpx;
+}
+
+/* ============ 设置选项 ============ */
+.settings-section {
+  background: #fff;
+  border-radius: 32rpx;
+  padding: 28rpx 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 24rpx rgba(102, 126, 234, 0.08);
+}
+
+.settings-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 28rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.settings-item:last-child {
+  border-bottom: none;
+}
+
+.settings-item:active {
+  background-color: #f8f8f8;
+}
+
+.item-left {
+  display: flex;
+  align-items: center;
+}
+
+.item-icon {
+  font-size: 36rpx;
+  margin-right: 20rpx;
+}
+
+.item-text {
+  font-size: 30rpx;
+  color: #333;
+}
+
+.item-right {
+  display: flex;
+  align-items: center;
+}
+
+.version {
+  font-size: 26rpx;
+  color: #999;
+  margin-right: 10rpx;
+}
+
+.arrow-icon {
+  font-size: 32rpx;
+  color: #ccc;
+}
+
+/* ============ 按钮区域 ============ */
+.logout-section {
+  margin-top: 40rpx;
+}
+
+.logout-btn {
+  width: 100%;
+  height: 96rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  color: #ff6b6b;
+  background: #fff;
+  border-radius: 48rpx;
+  border: 2rpx solid #ff6b6b;
+  box-sizing: border-box;
+}
+
+.logout-btn:active {
+  background-color: #fff5f5;
+}
+
+.logout-btn-text {
+  font-size: 32rpx;
+  color: #ff6b6b;
+  font-weight: 500;
+}
+
+.login-section {
+  margin-top: 40rpx;
+}
+
+.login-btn {
+  width: 100%;
+  height: 96rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 48rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  box-shadow: 0 12rpx 36rpx rgba(102, 126, 234, 0.35);
+}
+
+.login-btn:active {
+  transform: scale(0.98);
+}
+
+.login-btn-text {
+  font-size: 32rpx;
+  color: #fff;
+  font-weight: 500;
+}
+
+/* ============ 底部 ============ */
+.footer {
+  text-align: center;
+  margin-top: 60rpx;
+  padding-bottom: 20rpx;
+}
+
+.copyright {
+  font-size: 24rpx;
+  color: #ccc;
+}
+
+.bottom-space {
+  height: 160rpx;
+}

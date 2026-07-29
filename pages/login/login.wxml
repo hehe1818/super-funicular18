@@ -1,0 +1,72 @@
+<!--login.wxml-->
+<view class="page">
+  <!-- 自定义顶部标题栏 -->
+  <view class="custom-nav">
+    <view class="nav-content">
+      <text class="nav-icon">🔐</text>
+      <text class="nav-title">登录</text>
+    </view>
+  </view>
+
+  <view class="login-container">
+    <!-- 未登录状态 -->
+    <view wx:if="{{!isLoggedIn}}" class="login-content">
+      <view class="logo-section">
+        <view class="logo-wrapper">
+          <text class="logo-icon">🎲</text>
+        </view>
+        <text class="app-name">随机抽取工具</text>
+        <text class="app-desc">登录后即可使用全部功能</text>
+      </view>
+
+      <view class="login-form">
+        <view 
+          class="login-btn {{loading ? 'loading' : ''}}" 
+          bindtap="onLogin"
+        >
+          <text class="login-btn-icon">{{loading ? '⏳' : '📱'}}</text>
+          <text class="login-btn-text">{{loading ? '登录中...' : '微信登录'}}</text>
+        </view>
+
+        <view class="profile-btn" bindtap="getUserProfile">
+          <text class="profile-btn-icon">👤</text>
+          <text class="profile-btn-text">获取头像昵称</text>
+        </view>
+      </view>
+
+      <view class="tips">
+        <text class="tips-icon">💡</text>
+        <text class="tips-text">登录后可享受更多专属服务</text>
+      </view>
+    </view>
+
+    <!-- 已登录状态 -->
+    <view wx:else class="logged-content">
+      <view class="user-card">
+        <image class="avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
+        <view class="user-info">
+          <text class="nickname">{{userInfo.nickName || '微信用户'}}</text>
+          <view class="status-tag">
+            <text class="status-dot"></text>
+            <text class="status-label">已登录</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="login-info">
+        <view class="info-item">
+          <text class="info-label">OpenID</text>
+          <text class="info-value">{{userInfo.openid}}</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">登录状态</text>
+          <text class="info-value success">● 在线</text>
+        </view>
+      </view>
+
+      <view class="logout-btn" bindtap="onLogout">
+        <text class="logout-btn-text">退出登录</text>
+      </view>
+    </view>
+  </view>
+</view>
