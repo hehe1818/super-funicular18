@@ -129,7 +129,9 @@ function getCurrentDateTime() {
 Page({
   data: {
     recordType: 'expense',
-    amount: '',
+    amount: '0.00',
+    expression: '',
+    showExpression: false,
     selectedCategory: '',
     selectedCategoryData: null,
     note: '',
@@ -142,7 +144,12 @@ Page({
     showCategoryModal: false,
     showAccountModal: false,
     showNoteInput: false,
-    noteFocus: false
+    noteFocus: false,
+    // 计算器内部状态
+    _currentInput: '0',
+    _previousValue: null,
+    _operator: null,
+    _waitingForOperand: false
   },
 
   onLoad() {
@@ -179,29 +186,158 @@ Page({
     });
   },
 
+  // 计算两个数的结果
+  calculate(a, b, operator) {
+    a = parseFloat(a);
+    b = parseFloat(b);
+    let result = 0;
+    switch (operator) {
+      case '+': result = a + b; break;
+      case '-': result = a - b; break;
+      case '*': result = a * b; break;
+      case '/': result = b !== 0 ? a / b : 0; break;
+    }
+    // 保留两位小数
+    return Math.round(result * 100) / 100;
+  },
+
+  // 运算符显示符号
+  getOperatorSymbol(op) {
+    switch (op) {
+      case '+': return '+';
+      case '-': return '−';
+      case '*': return '×';
+      case '/': return '÷';
+      default: return op;
+    }
+  },
+
   // 键盘按键
   onKeyTap(e) {
     const key = e.currentTarget.dataset.key;
-    let { amount } = this.data;
+    let { _currentInput, _previousValue, _operator, _waitingForOperand, expression, showExpression } = this.data;
 
     if (key === 'backspace') {
-      amount = amount.slice(0, -1);
+      // 退格
+      if (_waitingForOperand) {
+        // 如果正在等待操作数，删除运算符
+        _operator = null;
+        _waitingForOperand = false;
+        _previousValue = null;
+        expression = '';
+        showExpression = false;
+        _currentInput = '0';
+      } else {
+        // 删除最后一个字符
+        if (_currentInput.length > 1) {
+          _currentInput = _currentInput.slice(0, -1);
+        } else {
+          _currentInput = '0';
+        }
+      }
+    } else if (key === '+') {
+      // 加法
+      if (_operator && !_waitingForOperand) {
+        // 如果已经有运算符且不是等待状态，先计算
+        const result = this.calculate(_previousValue, _currentInput, _operator);
+        _previousValue = result.toString();
+        _currentInput = result.toString();
+      } else {
+        _previousValue = _currentInput;
+      }
+      _operator = '+';
+      _waitingForOperand = true;
+      expression = `${_previousValue} ${this.getOperatorSymbol('+')}`;
+      showExpression = true;
+    } else if (key === '-') {
+      // 减法
+      if (_operator && !_waitingForOperand) {
+        const result = this.calculate(_previousValue, _currentInput, _operator);
+        _previousValue = result.toString();
+        _currentInput = result.toString();
+      } else {
+        _previousValue = _currentInput;
+      }
+      _operator = '-';
+      _waitingForOperand = true;
+      expression = `${_previousValue} ${this.getOperatorSymbol('-')}`;
+      showExpression = true;
+    } else if (key === '*') {
+      // 乘法
+      if (_operator && !_waitingForOperand) {
+        const result = this.calculate(_previousValue, _currentInput, _operator);
+        _previousValue = result.toString();
+        _currentInput = result.toString();
+      } else {
+        _previousValue = _currentInput;
+      }
+      _operator = '*';
+      _waitingForOperand = true;
+      expression = `${_previousValue} ${this.getOperatorSymbol('*')}`;
+      showExpression = true;
+    } else if (key === '/') {
+      // 除法
+      if (_operator && !_waitingForOperand) {
+        const result = this.calculate(_previousValue, _currentInput, _operator);
+        _previousValue = result.toString();
+        _currentInput = result.toString();
+      } else {
+        _previousValue = _currentInput;
+      }
+      _operator = '/';
+      _waitingForOperand = true;
+      expression = `${_previousValue} ${this.getOperatorSymbol('/')}`;
+      showExpression = true;
     } else if (key === '.') {
-      if (!amount.includes('.')) {
-        amount = amount + '.';
+      // 小数点
+      if (_waitingForOperand) {
+        _currentInput = '0';
+        _waitingForOperand = false;
+      }
+      if (!_currentInput.includes('.')) {
+        _currentInput = _currentInput + '.';
       }
     } else {
+      // 数字
+      if (_waitingForOperand) {
+        _currentInput = '0';
+        _waitingForOperand = false;
+        expression = '';
+        showExpression = false;
+      }
       // 限制小数点后两位
-      if (amount.includes('.')) {
-        const decimalPart = amount.split('.')[1] || '';
+      if (_currentInput.includes('.')) {
+        const decimalPart = _currentInput.split('.')[1] || '';
         if (decimalPart.length >= 2) {
           return;
         }
       }
-      amount = amount + key;
+      // 防止整数部分过长
+      if (_currentInput === '0') {
+        _currentInput = key;
+      } else {
+        _currentInput = _currentInput + key;
+      }
     }
 
-    this.setData({ amount });
+    // 更新显示的金额
+    let displayAmount = _currentInput;
+    // 去掉末尾的0和多余的小数点
+    if (displayAmount.includes('.')) {
+      displayAmount = parseFloat(displayAmount).toFixed(2);
+    } else {
+      displayAmount = displayAmount + '.00';
+    }
+
+    this.setData({
+      _currentInput,
+      _previousValue,
+      _operator,
+      _waitingForOperand,
+      expression,
+      showExpression,
+      amount: displayAmount
+    });
   },
 
   // 点击分类
@@ -294,9 +430,20 @@ Page({
 
   // 提交
   onSubmit() {
-    const { amount, selectedCategoryData, recordType, note } = this.data;
+    let { _currentInput, _previousValue, _operator, _waitingForOperand, amount, selectedCategoryData, recordType, note } = this.data;
 
-    if (!amount || parseFloat(amount) === 0) {
+    // 计算最终结果
+    let finalAmount = parseFloat(amount);
+    if (_operator && _previousValue !== null && !_waitingForOperand) {
+      // 完成最后的计算
+      const result = this.calculate(_previousValue, _currentInput, _operator);
+      finalAmount = result;
+    } else if (_operator && _previousValue !== null && _waitingForOperand) {
+      // 如果正在等待操作数，使用之前的值作为结果
+      finalAmount = parseFloat(_previousValue);
+    }
+
+    if (finalAmount === 0) {
       wx.showToast({ title: '请输入金额', icon: 'none' });
       return;
     }
@@ -307,7 +454,7 @@ Page({
 
     const transaction = {
       type: recordType,
-      amount: parseFloat(amount).toFixed(2),
+      amount: finalAmount.toFixed(2),
       category: selectedCategoryData.name,
       categoryIcon: selectedCategoryData.icon,
       note: note || '',
@@ -318,13 +465,19 @@ Page({
 
     wx.showToast({ title: '记账成功', icon: 'success' });
 
-    // 重置表单
+    // 重置表单和计算器
     this.setData({
-      amount: '',
+      amount: '0.00',
+      expression: '',
+      showExpression: false,
       selectedCategory: '',
       selectedCategoryData: null,
       note: '',
-      showNoteInput: false
+      showNoteInput: false,
+      _currentInput: '0',
+      _previousValue: null,
+      _operator: null,
+      _waitingForOperand: false
     });
 
     setTimeout(() => {

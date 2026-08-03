@@ -28,7 +28,10 @@
     <view class="amountSection">
       <view class="amountDisplay">
         <text class="amountSymbol">¥</text>
-        <text class="amountValue">{{amount || '0.00'}}</text>
+        <text class="amountValue">{{amount}}</text>
+        <view wx:if="{{showExpression}}" class="expressionDisplay">
+          <text class="expressionText">{{expression}}</text>
+        </view>
       </view>
       <view class="photoBtn" bindtap="onPhotoClick" hover-class="photoBtnHover">
         <text class="photoIcon">📷</text>

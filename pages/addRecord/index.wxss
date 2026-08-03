@@ -66,6 +66,7 @@
   display: flex;
   align-items: baseline;
   flex: 1;
+  flex-wrap: wrap;
 }
 
 .amountSymbol {
@@ -79,6 +80,23 @@
   font-size: 96rpx;
   font-weight: 700;
   color: #1D2129;
+  line-height: 1;
+}
+
+/* 计算表达式显示 */
+.expressionDisplay {
+  width: 100%;
+  margin-top: 16rpx;
+  padding: 12rpx 20rpx;
+  background: #F0F2F1;
+  border-radius: 8rpx;
+  align-self: flex-start;
+}
+
+.expressionText {
+  font-size: 24rpx;
+  color: #86909C;
+  font-family: monospace;
 }
 
 .photoBtn {
