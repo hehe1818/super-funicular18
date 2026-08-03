@@ -1,0 +1,73 @@
+<!--pages/addRecord/index.wxml-->
+<view class="addRecordPage">
+  <!-- 类型切换 -->
+  <view class="typeSwitcher">
+    <view 
+      class="typeItem {{recordType === 'expense' ? 'typeItemActiveExpense' : ''}}"
+      data-type="expense"
+      bindtap="onTypeChange"
+      hover-class="typeItemHover"
+    >支出</view>
+    <view 
+      class="typeItem {{recordType === 'income' ? 'typeItemActiveIncome' : ''}}"
+      data-type="income"
+      bindtap="onTypeChange"
+      hover-class="typeItemHover"
+    >收入</view>
+  </view>
+
+  <!-- 金额输入 -->
+  <view class="amountSection">
+    <view class="amountLabel">金额（元）</view>
+    <input 
+      class="amountInput" 
+      type="digit" 
+      value="{{amount}}"
+      bindinput="onAmountInput"
+      placeholder="0.00"
+    />
+  </view>
+
+  <!-- 分类选择 -->
+  <view class="categoriesSection">
+    <view class="sectionTitle">选择分类</view>
+    <view class="categoryGrid">
+      <view 
+        wx:for="{{currentCategories}}" 
+        wx:key="id" 
+        class="categoryGridItem {{selectedCategory === item.id ? 'categoryGridItemSelected' : ''}}"
+        data-id="{{item.id}}"
+        bindtap="onCategorySelect"
+        hover-class="categoryGridItemHover"
+      >
+        <view class="categoryGridIcon">{{item.icon}}</view>
+        <text class="categoryGridText">{{item.name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 备注 -->
+  <view class="noteSection">
+    <view class="sectionTitle">备注</view>
+    <input 
+      class="noteInput" 
+      value="{{note}}"
+      bindinput="onNoteInput"
+      placeholder="添加备注..."
+    />
+  </view>
+
+  <!-- 日期 -->
+  <view class="dateSection">
+    <text class="dateLabel">日期</text>
+    <view class="dateValue">
+      <text>{{todayDate}}</text>
+      <text>📅</text>
+    </view>
+  </view>
+
+  <!-- 提交按钮 -->
+  <view class="submitButton" bindtap="onSubmit" hover-class="submitButtonHover">
+    <text class="submitButtonText">保存记账</text>
+  </view>
+</view>

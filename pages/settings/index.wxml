@@ -1,0 +1,93 @@
+<!--pages/settings/index.wxml-->
+<view class="settingsPage">
+  <!-- 用户信息 -->
+  <view class="userSection">
+    <view class="avatar">👤</view>
+    <view class="userInfo">
+      <text class="userName">同学小明</text>
+      <text class="userEmail">xiaoming@student.edu</text>
+    </view>
+  </view>
+
+  <!-- 账户设置 -->
+  <view class="settingsGroup">
+    <view class="settingsItem">
+      <view class="settingsIcon">👤</view>
+      <text class="settingsLabel">个人资料</text>
+      <text class="settingsArrow">›</text>
+    </view>
+    <view class="settingsItem">
+      <view class="settingsIcon">🎯</view>
+      <text class="settingsLabel">预算设置</text>
+      <text class="settingsArrow">›</text>
+    </view>
+    <view class="settingsItem">
+      <view class="settingsIcon">🏷️</view>
+      <text class="settingsLabel">分类管理</text>
+      <text class="settingsArrow">›</text>
+    </view>
+  </view>
+
+  <!-- 通知与安全 -->
+  <view class="settingsGroup">
+    <view class="settingsItem">
+      <view class="settingsIcon">🔔</view>
+      <text class="settingsLabel">消息通知</text>
+      <view 
+        class="settingsSwitch {{notificationEnabled ? 'settingsSwitchActive' : ''}}"
+        bindtap="onToggleNotification"
+      ></view>
+    </view>
+    <view class="settingsItem">
+      <view class="settingsIcon">🔐</view>
+      <text class="settingsLabel">指纹解锁</text>
+      <view 
+        class="settingsSwitch {{biometricEnabled ? 'settingsSwitchActive' : ''}}"
+        bindtap="onToggleBiometric"
+      ></view>
+    </view>
+    <view class="settingsItem">
+      <view class="settingsIcon">🌙</view>
+      <text class="settingsLabel">深色模式</text>
+      <text class="settingsValue">跟随系统</text>
+      <text class="settingsArrow">›</text>
+    </view>
+  </view>
+
+  <!-- 其他 -->
+  <view class="settingsGroup">
+    <view class="settingsItem">
+      <view class="settingsIcon">☁️</view>
+      <text class="settingsLabel">数据备份</text>
+      <text class="settingsArrow">›</text>
+    </view>
+    <view class="settingsItem">
+      <view class="settingsIcon">📤</view>
+      <text class="settingsLabel">导出数据</text>
+      <text class="settingsArrow">›</text>
+    </view>
+    <view class="settingsItem">
+      <view class="settingsIcon">💬</view>
+      <text class="settingsLabel">意见反馈</text>
+      <text class="settingsArrow">›</text>
+    </view>
+    <view class="settingsItem">
+      <view class="settingsIcon">❓</view>
+      <text class="settingsLabel">帮助中心</text>
+      <text class="settingsArrow">›</text>
+    </view>
+  </view>
+
+  <!-- 退出登录 -->
+  <view class="settingsGroup">
+    <view class="settingsItem" bindtap="onLogout">
+      <view class="settingsIcon">🚪</view>
+      <text class="settingsLabel">退出登录</text>
+    </view>
+  </view>
+
+  <!-- 版本信息 -->
+  <view class="versionInfo">
+    <text>大学生账本 v1.0.0</text>
+  </view>
+</view>

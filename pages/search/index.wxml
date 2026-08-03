@@ -1,0 +1,9 @@
+<!--pages/search/index.wxml-->
+<view class="searchPage">
+  <input class="searchInput" placeholder="搜索账单备注、分类..." />
+  <view class="placeholderContent">
+    <view class="placeholderIcon">🔍</view>
+    <text class="placeholderTitle">搜索功能开发中</text>
+    <text class="placeholderDesc">敬请期待</text>
+  </view>
+</view>

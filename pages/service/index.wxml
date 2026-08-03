@@ -1,0 +1,22 @@
+<!--pages/service/index.wxml-->
+<view class="servicePage">
+  <view class="placeholderContent">
+    <view class="placeholderIcon">💬</view>
+    <text class="placeholderTitle">客服中心</text>
+    <text class="placeholderDesc">工作时间：9:00 - 21:00</text>
+  </view>
+  <view class="contactInfo">
+    <view class="contactItem">
+      <text class="contactLabel">客服电话</text>
+      <text class="contactValue">400-888-8888</text>
+    </view>
+    <view class="contactItem">
+      <text class="contactLabel">邮箱</text>
+      <text class="contactValue">support@ledger.com</text>
+    </view>
+    <view class="contactItem">
+      <text class="contactLabel">微信</text>
+      <text class="contactValue">ledger_service</text>
+    </view>
+  </view>
+</view>

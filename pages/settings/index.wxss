@@ -1,0 +1,137 @@
+/* pages/settings/index.wxss */
+
+.settingsPage {
+  min-height: 100vh;
+  background: #F7F9F8;
+  padding-bottom: 120rpx;
+}
+
+/* 用户信息 */
+.userSection {
+  background: linear-gradient(135deg, #7EB8A0 0%, #5A9B82 100%);
+  padding: 48rpx 32rpx;
+  padding-top: calc(env(safe-area-inset-top) + 48rpx);
+  display: flex;
+  align-items: center;
+  gap: 32rpx;
+}
+
+.avatar {
+  width: 128rpx;
+  height: 128rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 56rpx;
+  border: 4rpx solid rgba(255, 255, 255, 0.5);
+}
+
+.userInfo {
+  flex: 1;
+}
+
+.userName {
+  font-size: 40rpx;
+  font-weight: 600;
+  color: #FFFFFF;
+  margin-bottom: 8rpx;
+  display: block;
+}
+
+.userEmail {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.85);
+  display: block;
+}
+
+/* 设置组 */
+.settingsGroup {
+  margin: 32rpx;
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.settingsItem {
+  display: flex;
+  align-items: center;
+  padding: 32rpx 48rpx;
+  border-bottom: 1rpx solid #F2F3F5;
+  transition: all 0.15s ease;
+}
+
+.settingsItem:last-child {
+  border-bottom: none;
+}
+
+.settingsItem:active {
+  background: #F0F2F1;
+}
+
+.settingsIcon {
+  width: 56rpx;
+  height: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  margin-right: 32rpx;
+}
+
+.settingsLabel {
+  flex: 1;
+  font-size: 28rpx;
+  color: #1D2129;
+}
+
+.settingsValue {
+  font-size: 24rpx;
+  color: #86909C;
+  margin-right: 12rpx;
+}
+
+.settingsArrow {
+  font-size: 24rpx;
+  color: #C9CDD4;
+}
+
+/* 开关 */
+.settingsSwitch {
+  width: 80rpx;
+  height: 44rpx;
+  background: #F0F2F1;
+  border-radius: 999rpx;
+  position: relative;
+  transition: all 0.25s ease;
+}
+
+.settingsSwitch::after {
+  content: '';
+  position: absolute;
+  top: 4rpx;
+  left: 4rpx;
+  width: 36rpx;
+  height: 36rpx;
+  background: #FFFFFF;
+  border-radius: 999rpx;
+  transition: all 0.25s ease;
+}
+
+.settingsSwitchActive {
+  background: #7EB8A0;
+}
+
+.settingsSwitchActive::after {
+  left: 40rpx;
+}
+
+/* 版本信息 */
+.versionInfo {
+  text-align: center;
+  padding: 48rpx;
+  font-size: 24rpx;
+  color: #C9CDD4;
+}

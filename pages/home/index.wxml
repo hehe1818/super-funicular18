@@ -1,0 +1,98 @@
+<!--pages/home/index.wxml-->
+<view class="homePage">
+  <!-- 头部区域 -->
+  <view class="header">
+    <view class="headerTitle">大学生账本</view>
+    <view class="headerActions">
+      <view class="headerIcon {{isRefreshing ? 'headerIconRefreshing' : ''}}" bindtap="onRefresh" hover-class="headerIconHover">
+        <text class="iconfont">🔄</text>
+      </view>
+      <view class="headerIcon" bindtap="onSearchTap" hover-class="headerIconHover">
+        <text class="iconfont">🔍</text>
+      </view>
+      <view class="headerIcon" bindtap="onServiceTap" hover-class="headerIconHover">
+        <text class="iconfont">💬</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 结余卡片 -->
+  <view class="balanceCard">
+    <view class="balanceLabel">结余</view>
+    <view class="balanceAmount {{balance < 0 ? 'balanceAmountNegative' : ''}}">¥{{balance}}</view>
+    <view class="incomeExpenseRow">
+      <view class="incomeExpenseItem">
+        <view class="incomeLabel">总收入</view>
+        <view class="incomeAmount">¥{{totalIncome}}</view>
+      </view>
+      <view class="incomeExpenseItem">
+        <view class="expenseLabel">总支出</view>
+        <view class="expenseAmount">¥{{totalExpense}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 时间筛选 -->
+  <view class="timeFilter">
+    <view 
+      wx:for="{{timeRangeOptions}}" 
+      wx:key="key" 
+      class="timeFilterItem {{activeTimeRange === item.key ? 'timeFilterItemActive' : ''}}"
+      data-key="{{item.key}}"
+      bindtap="onTimeRangeChange"
+      hover-class="timeFilterItemHover"
+    >
+      <text>{{item.label}}</text>
+    </view>
+  </view>
+
+  <!-- 快捷操作 -->
+  <view class="quickActions">
+    <view class="quickActionItem" bindtap="onQuickAction" data-type="transaction" hover-class="quickActionItemHover">
+      <view class="quickActionIcon">📋</view>
+      <text class="quickActionText">流水</text>
+    </view>
+    <view class="quickActionItem" bindtap="onQuickAction" data-type="report" hover-class="quickActionItemHover">
+      <view class="quickActionIcon">📊</view>
+      <text class="quickActionText">报表</text>
+    </view>
+    <view class="quickActionItem" bindtap="onQuickAction" data-type="asset" hover-class="quickActionItemHover">
+      <view class="quickActionIcon">💰</view>
+      <text class="quickActionText">资产</text>
+    </view>
+    <view class="quickActionItem" bindtap="onQuickAction" data-type="budget" hover-class="quickActionItemHover">
+      <view class="quickActionIcon">🎯</view>
+      <text class="quickActionText">预算</text>
+    </view>
+  </view>
+
+  <!-- 最近流水 -->
+  <view class="sectionHeader">
+    <text class="sectionTitle">最近流水</text>
+    <view class="sectionMore">
+      <text>查看全部</text>
+      <text>›</text>
+    </view>
+  </view>
+
+  <view wx:if="{{transactions.length > 0}}" class="transactionList">
+    <view wx:for="{{transactions}}" wx:key="id" class="transactionItem">
+      <view class="transactionIcon">{{item.categoryIcon}}</view>
+      <view class="transactionInfo">
+        <view class="transactionCategory">{{item.category}}</view>
+        <view class="transactionNote">{{item.note}}</view>
+      </view>
+      <view class="transactionRight">
+        <text class="{{item.type === 'expense' ? 'transactionAmountExpense' : 'transactionAmountIncome'}}">
+          {{item.type === 'expense' ? '-' : '+'}}¥{{item.amount}}
+        </text>
+        <view class="transactionDate">{{item.date}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:else class="emptyState">
+    <view class="emptyIcon">📒</view>
+    <text class="emptyText">暂无流水记录</text>
+  </view>
+</view>

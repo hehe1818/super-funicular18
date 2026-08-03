@@ -1,0 +1,57 @@
+<!--pages/asset/index.wxml-->
+<view class="assetPage">
+  <!-- 净资产卡片 -->
+  <view class="totalCard">
+    <view class="totalLabel">净资产</view>
+    <view class="totalAmount">¥{{netAssets}}</view>
+    <view class="totalRow">
+      <view class="totalItem">
+        <text class="totalItemLabel">总资产</text>
+        <text class="totalItemValue">¥{{totalAssets}}</text>
+      </view>
+      <view class="totalItem">
+        <text class="totalItemLabel">总负债</text>
+        <text class="totalItemValue">¥{{totalLiabilities}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 快捷操作 -->
+  <view class="assetActions">
+    <view class="actionCard">
+      <view class="actionIcon">➕</view>
+      <text class="actionText">添加账户</text>
+    </view>
+    <view class="actionCard">
+      <view class="actionIcon">💳</view>
+      <text class="actionText">信用卡</text>
+    </view>
+    <view class="actionCard">
+      <view class="actionIcon">🏦</view>
+      <text class="actionText">理财</text>
+    </view>
+  </view>
+
+  <!-- 资产明细 -->
+  <view class="assetListSection">
+    <view class="sectionHeader">
+      <text class="sectionTitle">资产明细</text>
+      <text class="sectionAction">编辑</text>
+    </view>
+    <view wx:for="{{assetItems}}" wx:key="id" class="assetItem">
+      <view class="assetIcon">{{item.icon}}</view>
+      <view class="assetInfo">
+        <text class="assetName">{{item.name}}</text>
+        <text class="assetChange {{item.change > 0 ? 'assetChangePositive' : item.change < 0 ? 'assetChangeNegative' : ''}}">
+          {{item.change > 0 ? '+' : ''}}¥{{item.change}}
+        </text>
+      </view>
+      <view class="assetRight">
+        <text class="assetAmount">{{item.isDebt ? '-' : ''}}¥{{item.amount}}</text>
+        <text wx:if="{{item.changePercent !== 0}}" class="assetPercent {{item.changePercent > 0 ? 'assetPercentPositive' : 'assetPercentNegative'}}">
+          {{item.changePercent > 0 ? '+' : ''}}{{item.changePercent}}%
+        </text>
+      </view>
+    </view>
+  </view>
+</view>

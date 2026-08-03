@@ -1,0 +1,42 @@
+/* pages/search/index.wxss */
+
+.searchPage {
+  min-height: 100vh;
+  background: #F7F9F8;
+  padding: 32rpx;
+}
+
+.searchInput {
+  width: 100%;
+  height: 88rpx;
+  background: #FFFFFF;
+  border-radius: 48rpx;
+  padding: 0 48rpx;
+  font-size: 28rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.placeholderContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 256rpx 32rpx;
+}
+
+.placeholderIcon {
+  font-size: 100rpx;
+  margin-bottom: 48rpx;
+}
+
+.placeholderTitle {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #1D2129;
+  margin-bottom: 24rpx;
+}
+
+.placeholderDesc {
+  font-size: 28rpx;
+  color: #86909C;
+}

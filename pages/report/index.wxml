@@ -1,0 +1,82 @@
+<!--pages/report/index.wxml-->
+<view class="reportPage">
+  <!-- 日期选择 -->
+  <view class="dateSelector">
+    <view class="dateBtn" bindtap="onPrevMonth">
+      <text class="dateBtnIcon">◀</text>
+    </view>
+    <picker class="datePicker" mode="multiSelector" range="{{yearRange}}" value="{{dateIndex}}" bindchange="onDateChange" bindcolumnchange="onColumnChange">
+      <view class="dateText">{{displayDate}}</view>
+    </picker>
+    <view class="dateBtn" bindtap="onNextMonth">
+      <text class="dateBtnIcon">▶</text>
+    </view>
+    <view class="refreshBtn {{isRefreshing ? 'refreshBtnSpinning' : ''}}" bindtap="onRefresh" hover-class="refreshBtnHover">
+      <text>🔄</text>
+    </view>
+  </view>
+
+  <!-- 汇总卡片 -->
+  <view class="summaryCard">
+    <view class="summaryTitle">{{displayDate}} 概览</view>
+    <view class="summaryRow">
+      <view class="summaryItem">
+        <text class="summaryLabel">收入</text>
+        <text class="summaryIncome">¥{{summaryData.income}}</text>
+      </view>
+      <view class="summaryItem">
+        <text class="summaryLabel">支出</text>
+        <text class="summaryExpense">¥{{summaryData.expense}}</text>
+      </view>
+      <view class="summaryItem">
+        <text class="summaryLabel">结余</text>
+        <text class="summaryBalance">¥{{summaryData.balance}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 图表区域 -->
+  <view class="chartSection">
+    <view class="chartHeader">
+      <text class="chartTitle">收支趋势</text>
+      <view class="chartTabs">
+        <view class="chartTab {{chartType === 'expense' ? 'chartTabActive' : ''}}" bindtap="onChartTypeChange" data-type="expense" hover-class="chartTabHover">支出</view>
+        <view class="chartTab {{chartType === 'income' ? 'chartTabActive' : ''}}" bindtap="onChartTypeChange" data-type="income" hover-class="chartTabHover">收入</view>
+      </view>
+    </view>
+    <view class="chartContainer">
+      <canvas canvas-id="trendChart" id="trendChart" class="chartCanvas" style="width:{{canvasWidth}}px;height:{{canvasHeight}}px;" bindtouchstart="onChartTouchStart" bindtouchmove="onChartTouchMove"></canvas>
+    </view>
+    <view class="chartLegend">
+      <view class="legendItem">
+        <view class="legendDot expenseDot"></view>
+        <text class="legendText">支出</text>
+      </view>
+      <view class="legendItem">
+        <view class="legendDot incomeDot"></view>
+        <text class="legendText">收入</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 分类统计 -->
+  <view class="categoryList" wx:if="{{categoryStats.length > 0}}">
+    <view class="categoryTitle">分类统计</view>
+    <view wx:for="{{categoryStats}}" wx:key="category" class="categoryItem">
+      <view class="categoryIcon">{{item.icon}}</view>
+      <view class="categoryInfo">
+        <text class="categoryName">{{item.category}}</text>
+        <view class="categoryBar">
+          <view class="categoryBarFill" style="width: {{item.percentage}}%"></view>
+        </view>
+      </view>
+      <text class="categoryAmount">¥{{item.amount}}</text>
+      <text class="categoryPercent">{{item.percentage}}%</text>
+    </view>
+  </view>
+
+  <view wx:else class="emptyCategory">
+    <view class="emptyIcon">📊</view>
+    <text class="emptyText">暂无支出记录</text>
+  </view>
+</view>
