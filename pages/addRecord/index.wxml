@@ -1,73 +1,220 @@
 <!--pages/addRecord/index.wxml-->
 <view class="addRecordPage">
-  <!-- 类型切换 -->
-  <view class="typeSwitcher">
-    <view 
-      class="typeItem {{recordType === 'expense' ? 'typeItemActiveExpense' : ''}}"
-      data-type="expense"
-      bindtap="onTypeChange"
-      hover-class="typeItemHover"
-    >支出</view>
-    <view 
-      class="typeItem {{recordType === 'income' ? 'typeItemActiveIncome' : ''}}"
-      data-type="income"
-      bindtap="onTypeChange"
-      hover-class="typeItemHover"
-    >收入</view>
-  </view>
-
-  <!-- 金额输入 -->
-  <view class="amountSection">
-    <view class="amountLabel">金额（元）</view>
-    <input 
-      class="amountInput" 
-      type="digit" 
-      value="{{amount}}"
-      bindinput="onAmountInput"
-      placeholder="0.00"
-    />
-  </view>
-
-  <!-- 分类选择 -->
-  <view class="categoriesSection">
-    <view class="sectionTitle">选择分类</view>
-    <view class="categoryGrid">
+  <!-- 主内容区 -->
+  <scroll-view class="contentArea" scroll-y>
+    <!-- 类型切换 Tab -->
+    <view class="typeTabs">
       <view 
-        wx:for="{{currentCategories}}" 
-        wx:key="id" 
-        class="categoryGridItem {{selectedCategory === item.id ? 'categoryGridItemSelected' : ''}}"
-        data-id="{{item.id}}"
-        bindtap="onCategorySelect"
-        hover-class="categoryGridItemHover"
-      >
-        <view class="categoryGridIcon">{{item.icon}}</view>
-        <text class="categoryGridText">{{item.name}}</text>
+        class="typeTab {{recordType === 'expense' ? 'typeTabActive' : ''}}"
+        data-type="expense"
+        bindtap="onTypeChange"
+        hover-class="typeTabHover"
+      >支出</view>
+      <view 
+        class="typeTab {{recordType === 'income' ? 'typeTabActive' : ''}}"
+        data-type="income"
+        bindtap="onTypeChange"
+        hover-class="typeTabHover"
+      >收入</view>
+      <view 
+        class="typeTab {{recordType === 'transfer' ? 'typeTabActive' : ''}}"
+        data-type="transfer"
+        bindtap="onTypeChange"
+        hover-class="typeTabHover"
+      >转账</view>
+    </view>
+
+    <!-- 金额显示区 -->
+    <view class="amountSection">
+      <view class="amountDisplay">
+        <text class="amountSymbol">¥</text>
+        <text class="amountValue">{{amount || '0.00'}}</text>
+      </view>
+      <view class="photoBtn" bindtap="onPhotoClick" hover-class="photoBtnHover">
+        <text class="photoIcon">📷</text>
+        <text class="photoText">拍照</text>
       </view>
     </view>
-  </view>
 
-  <!-- 备注 -->
-  <view class="noteSection">
-    <view class="sectionTitle">备注</view>
-    <input 
-      class="noteInput" 
-      value="{{note}}"
-      bindinput="onNoteInput"
-      placeholder="添加备注..."
-    />
-  </view>
+    <!-- 信息列表区 -->
+    <view class="infoList">
+      <!-- 分类 -->
+      <view class="infoItem" bindtap="onCategorySelect" hover-class="infoItemHover">
+        <view class="infoItemLeft">
+          <text class="infoIcon">🏷️</text>
+          <text class="infoLabel">分类</text>
+        </view>
+        <view class="infoItemRight">
+          <text wx:if="{{selectedCategoryData}}" class="infoValue">{{selectedCategoryData.icon}} {{selectedCategoryData.name}}</text>
+          <text wx:else class="infoPlaceholder">请选择分类</text>
+          <text class="infoArrow">›</text>
+        </view>
+      </view>
 
-  <!-- 日期 -->
-  <view class="dateSection">
-    <text class="dateLabel">日期</text>
-    <view class="dateValue">
-      <text>{{todayDate}}</text>
-      <text>📅</text>
+      <!-- 账户 -->
+      <view class="infoItem" bindtap="onAccountSelect" hover-class="infoItemHover">
+        <view class="infoItemLeft">
+          <text class="infoIcon">💳</text>
+          <text class="infoLabel">账户</text>
+        </view>
+        <view class="infoItemRight">
+          <text class="infoValue">{{selectedAccount}}</text>
+          <text class="infoArrow">›</text>
+        </view>
+      </view>
+
+      <!-- 时间 -->
+      <picker 
+        mode="date" 
+        value="{{selectedDate}}" 
+        bindchange="onDateChange"
+        hover-class="infoItemHover"
+      >
+        <view class="infoItem">
+          <view class="infoItemLeft">
+            <text class="infoIcon">🕐</text>
+            <text class="infoLabel">时间</text>
+          </view>
+          <view class="infoItemRight">
+            <text class="infoValue">{{todayDate}}</text>
+            <text class="infoArrow">›</text>
+          </view>
+        </view>
+      </picker>
+
+      <!-- 备注 -->
+      <view class="infoItem" bindtap="onNoteFocus" hover-class="infoItemHover">
+        <view class="infoItemLeft">
+          <text class="infoIcon">📝</text>
+          <text class="infoLabel">备注</text>
+        </view>
+        <view class="infoItemRight">
+          <text wx:if="{{note}}" class="infoValue">{{note}}</text>
+          <text wx:else class="infoPlaceholder">添加备注</text>
+        </view>
+      </view>
     </view>
-  </view>
 
-  <!-- 提交按钮 -->
-  <view class="submitButton" bindtap="onSubmit" hover-class="submitButtonHover">
-    <text class="submitButtonText">保存记账</text>
+    <!-- 标签区 -->
+    <view class="tagsSection">
+      <view class="tagItem" bindtap="onTagTap" data-tag="成员" hover-class="tagItemHover">
+        <text class="tagIcon">👥</text>
+        <text class="tagText">成员</text>
+      </view>
+      <view class="tagItem" bindtap="onTagTap" data-tag="商家" hover-class="tagItemHover">
+        <text class="tagIcon">🏪</text>
+        <text class="tagText">商家</text>
+      </view>
+      <view class="tagItem" bindtap="onTagTap" data-tag="项目" hover-class="tagItemHover">
+        <text class="tagIcon">📋</text>
+        <text class="tagText">项目</text>
+      </view>
+    </view>
+
+    <!-- 备注输入框（隐藏显示用） -->
+    <view wx:if="{{showNoteInput}}" class="noteInputSection">
+      <input 
+        class="noteInput" 
+        value="{{note}}"
+        bindinput="onNoteInput"
+        placeholder="请输入备注"
+        focus="{{noteFocus}}"
+        bindblur="onNoteBlur"
+        adjust-position="{{true}}"
+        hold-keyboard="{{false}}"
+      />
+    </view>
+
+    <!-- 分类选择弹窗 -->
+    <view wx:if="{{showCategoryModal}}" class="modalMask" bindtap="onCloseCategoryModal">
+      <view class="modalContent modalContentLarge" catchtap="">
+        <view class="modalHeader">
+          <text class="modalTitle">选择分类</text>
+          <view class="modalClose" bindtap="onCloseCategoryModal" hover-class="modalCloseHover">✕</view>
+        </view>
+        <scroll-view class="modalBody modalBodyScroll" scroll-y>
+          <view wx:for="{{currentCategoryGroups}}" wx:for-item="group" wx:key="groupName" class="categoryGroup">
+            <view class="categoryGroupTitle">{{group.groupName}}</view>
+            <view class="categoryGrid">
+              <view 
+                wx:for="{{group.categories}}" 
+                wx:for-item="item"
+                wx:key="id" 
+                class="categoryItem {{selectedCategory === item.id ? 'categoryItemSelected' : ''}}"
+                data-id="{{item.id}}"
+                bindtap="onCategoryItemSelect"
+                hover-class="categoryItemHover"
+              >
+                <view class="categoryIconWrap">
+                  <text class="categoryIcon">{{item.icon}}</text>
+                </view>
+                <text class="categoryName">{{item.name}}</text>
+              </view>
+            </view>
+          </view>
+        </scroll-view>
+      </view>
+    </view>
+
+    <!-- 账户选择弹窗 -->
+    <view wx:if="{{showAccountModal}}" class="modalMask" bindtap="onCloseAccountModal">
+      <view class="modalContent" catchtap="">
+        <view class="modalHeader">
+          <text class="modalTitle">选择账户</text>
+          <view class="modalClose" bindtap="onCloseAccountModal" hover-class="modalCloseHover">✕</view>
+        </view>
+        <view class="modalBody">
+          <view 
+            wx:for="{{accounts}}" 
+            wx:key="id" 
+            class="accountItem {{selectedAccount === item.name ? 'accountItemSelected' : ''}}"
+            data-name="{{item.name}}"
+            bindtap="onAccountItemSelect"
+            hover-class="accountItemHover"
+          >
+            <text class="accountIcon">{{item.icon}}</text>
+            <text class="accountName">{{item.name}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 底部数字键盘 -->
+  <view class="numberKeyboard">
+    <!-- 左侧类型标签 -->
+    <view class="keyboardTypeLabels">
+      <view class="keyboardTypeItem {{recordType === 'expense' ? 'keyboardTypeActiveExpense' : ''}}" data-type="expense" bindtap="onTypeChange" hover-class="keyboardTypeHover">支出</view>
+      <view class="keyboardTypeItem {{recordType === 'income' ? 'keyboardTypeActiveIncome' : ''}}" data-type="income" bindtap="onTypeChange" hover-class="keyboardTypeHover">收入</view>
+      <view class="keyboardTypeItem {{recordType === 'transfer' ? 'keyboardTypeActiveTransfer' : ''}}" data-type="transfer" bindtap="onTypeChange" hover-class="keyboardTypeHover">转账</view>
+    </view>
+
+    <!-- 右侧键盘区 -->
+    <view class="keyboardRight">
+      <view class="keyboardRow">
+        <view class="keyBtn" bindtap="onKeyTap" data-key="7" hover-class="keyBtnHover">7</view>
+        <view class="keyBtn" bindtap="onKeyTap" data-key="8" hover-class="keyBtnHover">8</view>
+        <view class="keyBtn" bindtap="onKeyTap" data-key="9" hover-class="keyBtnHover">9</view>
+        <view class="keyBtn keyBtnOperator" bindtap="onKeyTap" data-key="+" hover-class="keyBtnHover">+</view>
+      </view>
+      <view class="keyboardRow">
+        <view class="keyBtn" bindtap="onKeyTap" data-key="4" hover-class="keyBtnHover">4</view>
+        <view class="keyBtn" bindtap="onKeyTap" data-key="5" hover-class="keyBtnHover">5</view>
+        <view class="keyBtn" bindtap="onKeyTap" data-key="6" hover-class="keyBtnHover">6</view>
+        <view class="keyBtn keyBtnOperator" bindtap="onKeyTap" data-key="-" hover-class="keyBtnHover">−</view>
+      </view>
+      <view class="keyboardRow">
+        <view class="keyBtn" bindtap="onKeyTap" data-key="1" hover-class="keyBtnHover">1</view>
+        <view class="keyBtn" bindtap="onKeyTap" data-key="2" hover-class="keyBtnHover">2</view>
+        <view class="keyBtn" bindtap="onKeyTap" data-key="3" hover-class="keyBtnHover">3</view>
+        <view class="keyBtn keyBtnOperator" bindtap="onKeyTap" data-key="*" hover-class="keyBtnHover">×</view>
+      </view>
+      <view class="keyboardRow keyboardLastRow">
+        <view class="keyBtn" bindtap="onKeyTap" data-key="." hover-class="keyBtnHover">.</view>
+        <view class="keyBtn" bindtap="onKeyTap" data-key="0" hover-class="keyBtnHover">0</view>
+        <view class="keyBtn keyBtnBackspace" bindtap="onKeyTap" data-key="backspace" hover-class="keyBtnHover">⌫</view>
+        <view class="keyBtn keyBtnConfirm" bindtap="onSubmit" hover-class="keyBtnConfirmHover">确定</view>
+      </view>
+    </view>
   </view>
 </view>

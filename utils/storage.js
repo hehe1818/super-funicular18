@@ -102,7 +102,7 @@ function getSummary(timeRange) {
     const amount = parseFloat(t.amount);
     if (t.type === 'income') {
       totalIncome += amount;
-    } else {
+    } else if (t.type === 'expense' || t.type === 'transfer') {
       totalExpense += amount;
     }
   });
@@ -138,13 +138,13 @@ function getReportData(year, month) {
     if (t.type === 'income') {
       totalIncome += amount;
       trendData.income[monthIndex] += amount;
-    } else {
+    } else if (t.type === 'expense' || t.type === 'transfer') {
       totalExpense += amount;
       trendData.expense[monthIndex] += amount;
     }
     
     // 分类统计
-    if (t.type === 'expense') {
+    if (t.type === 'expense' || t.type === 'transfer') {
       if (!categoryMap[t.category]) {
         categoryMap[t.category] = {
           category: t.category,

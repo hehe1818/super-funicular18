@@ -1,222 +1,520 @@
 /* pages/addRecord/index.wxss */
 
 .addRecordPage {
-  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
   background: #F7F9F8;
-  padding-bottom: 180rpx;
+  overflow: hidden;
 }
 
-/* 类型切换 */
-.typeSwitcher {
-  display: flex;
-  margin: 32rpx;
-  background: #FFFFFF;
-  border-radius: 48rpx;
-  padding: 8rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
-}
-
-.typeItem {
+/* 主内容区 */
+.contentArea {
   flex: 1;
-  height: 88rpx;
+  height: 0;
+  padding-bottom: 520rpx;
+}
+
+/* 类型切换 Tab */
+.typeTabs {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 28rpx;
-  color: #4E5969;
-  border-radius: 48rpx;
-  transition: all 0.25s ease;
+  padding: 24rpx 32rpx;
+  background: #FFFFFF;
+  gap: 48rpx;
+  border-bottom: 1rpx solid #F0F2F1;
 }
 
-.typeItem:active {
-  transform: scale(0.96);
+.typeTab {
+  font-size: 30rpx;
+  color: #86909C;
+  padding: 16rpx 0;
+  position: relative;
+  transition: all 0.2s ease;
 }
 
-.typeItemActiveExpense {
-  background: linear-gradient(135deg, #FF9F43 0%, #FFB770 100%);
-  color: #FFFFFF;
-  font-weight: 500;
-  box-shadow: 0 4rpx 12rpx rgba(255, 159, 67, 0.4);
+.typeTabActive {
+  color: #1D2129;
+  font-weight: 600;
 }
 
-.typeItemActiveIncome {
-  background: linear-gradient(135deg, #7EB8A0 0%, #A5D4BE 100%);
-  color: #FFFFFF;
-  font-weight: 500;
-  box-shadow: 0 4rpx 12rpx rgba(126, 184, 160, 0.4);
+.typeTabActive::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 48rpx;
+  height: 6rpx;
+  background: #7EB8A0;
+  border-radius: 3rpx;
 }
 
-.typeItemHover {
-  background: #F0F2F1;
+.typeTabHover {
+  opacity: 0.7;
 }
 
-/* 金额 */
+/* 金额显示区 */
 .amountSection {
   display: flex;
-  flex-direction: column;
   align-items: center;
+  justify-content: space-between;
   padding: 48rpx 32rpx;
+  background: #FFFFFF;
 }
 
-.amountLabel {
-  font-size: 24rpx;
-  color: #86909C;
-  margin-bottom: 24rpx;
+.amountDisplay {
+  display: flex;
+  align-items: baseline;
+  flex: 1;
 }
 
-.amountInput {
-  font-size: 72rpx;
+.amountSymbol {
+  font-size: 48rpx;
+  font-weight: 600;
+  color: #7EB8A0;
+  margin-right: 8rpx;
+}
+
+.amountValue {
+  font-size: 96rpx;
   font-weight: 700;
   color: #1D2129;
-  text-align: center;
-  min-width: 400rpx;
 }
 
-/* 分类 */
-.categoriesSection {
-  margin: 32rpx;
-  background: #FFFFFF;
-  border-radius: 24rpx;
-  padding: 48rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
-}
-
-.sectionTitle {
-  font-size: 30rpx;
-  font-weight: 600;
-  color: #1D2129;
-  margin-bottom: 32rpx;
-}
-
-.categoryGrid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 24rpx;
-}
-
-.categoryGridItem {
-  width: calc(25% - 18rpx);
+.photoBtn {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 24rpx 0;
+  padding: 16rpx 24rpx;
+  background: #F0F2F1;
   border-radius: 16rpx;
+  transition: all 0.2s ease;
+}
+
+.photoBtnHover {
+  background: #E0E4E3;
+  transform: scale(0.95);
+}
+
+.photoIcon {
+  font-size: 36rpx;
+  margin-bottom: 4rpx;
+}
+
+.photoText {
+  font-size: 20rpx;
+  color: #4E5969;
+}
+
+/* 信息列表区 */
+.infoList {
+  background: #FFFFFF;
+  margin-top: 16rpx;
+}
+
+.infoItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx;
+  border-bottom: 1rpx solid #F0F2F1;
   transition: all 0.15s ease;
 }
 
-.categoryGridItem:active {
-  transform: scale(0.92);
-  background: #F0F2F1;
+.infoItem:last-child {
+  border-bottom: none;
 }
 
-.categoryGridItemSelected {
-  background: #E8F3EE;
+.infoItemHover {
+  background: #F7F9F8;
 }
 
-.categoryGridItemHover {
-  background: #F0F2F1;
-}
-
-.categoryGridIcon {
-  width: 88rpx;
-  height: 88rpx;
-  border-radius: 16rpx;
-  background: #F0F2F1;
+.infoItemLeft {
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: 40rpx;
-  margin-bottom: 16rpx;
-  transition: all 0.25s ease;
+  gap: 16rpx;
 }
 
-.categoryGridItemSelected .categoryGridIcon {
-  background: linear-gradient(135deg, #7EB8A0 0%, #A5D4BE 100%);
+.infoIcon {
+  font-size: 32rpx;
 }
 
-.categoryGridText {
+.infoLabel {
+  font-size: 30rpx;
+  color: #1D2129;
+}
+
+.infoItemRight {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.infoValue {
+  font-size: 30rpx;
+  color: #1D2129;
+}
+
+.infoPlaceholder {
+  font-size: 30rpx;
+  color: #C9CDD4;
+}
+
+.infoArrow {
+  font-size: 36rpx;
+  color: #C9CDD4;
+}
+
+/* 标签区 */
+.tagsSection {
+  display: flex;
+  gap: 24rpx;
+  padding: 32rpx;
+  background: #FFFFFF;
+  margin-top: 16rpx;
+}
+
+.tagItem {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 16rpx 24rpx;
+  background: #F0F2F1;
+  border-radius: 32rpx;
+  transition: all 0.2s ease;
+}
+
+.tagItemHover {
+  background: #E8F3EE;
+  transform: scale(0.95);
+}
+
+.tagIcon {
+  font-size: 24rpx;
+}
+
+.tagText {
   font-size: 24rpx;
   color: #4E5969;
 }
 
-.categoryGridItemSelected .categoryGridText {
-  color: #7EB8A0;
-  font-weight: 500;
-}
-
-/* 备注 */
-.noteSection {
-  margin: 32rpx;
+/* 备注输入框 */
+.noteInputSection {
+  padding: 32rpx;
   background: #FFFFFF;
-  border-radius: 24rpx;
-  padding: 48rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+  margin-top: 16rpx;
 }
 
 .noteInput {
   width: 100%;
-  min-height: 120rpx;
+  height: 88rpx;
   font-size: 28rpx;
   color: #1D2129;
-  padding: 24rpx;
-  background: #F0F2F1;
-  border-radius: 16rpx;
-  transition: all 0.15s ease;
+  padding: 0 24rpx;
+  background: #F7F9F8;
+  border-radius: 12rpx;
 }
 
-/* 日期 */
-.dateSection {
-  margin: 32rpx;
-  background: #FFFFFF;
-  border-radius: 24rpx;
-  padding: 32rpx 48rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.dateLabel {
-  font-size: 28rpx;
-  color: #4E5969;
-}
-
-.dateValue {
-  font-size: 28rpx;
-  color: #1D2129;
-  display: flex;
-  align-items: center;
-  gap: 12rpx;
-}
-
-/* 提交按钮 */
-.submitButton {
+/* 弹窗遮罩 */
+.modalMask {
   position: fixed;
-  bottom: 180rpx;
-  left: 32rpx;
-  right: 32rpx;
-  height: 96rpx;
-  background: linear-gradient(135deg, #7EB8A0 0%, #5A9B82 100%);
-  border-radius: 48rpx;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8rpx 24rpx rgba(126, 184, 160, 0.4);
-  transition: all 0.15s ease;
 }
 
-.submitButton:active {
-  transform: scale(0.98);
+.modalContent {
+  width: 600rpx;
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  overflow: hidden;
+}
+
+.modalContentLarge {
+  width: 680rpx;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx;
+  border-bottom: 1rpx solid #F0F2F1;
+  flex-shrink: 0;
+}
+
+.modalTitle {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1D2129;
+}
+
+.modalClose {
+  width: 48rpx;
+  height: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  color: #86909C;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.modalCloseHover {
+  background: #F0F2F1;
+}
+
+.modalBody {
+  padding: 32rpx;
+  overflow-y: auto;
+}
+
+.modalBodyScroll {
+  flex: 1;
+  max-height: none;
+  padding: 24rpx 32rpx;
+}
+
+/* 分类分组 */
+.categoryGroup {
+  margin-bottom: 32rpx;
+}
+
+.categoryGroup:last-child {
+  margin-bottom: 16rpx;
+}
+
+.categoryGroupTitle {
+  font-size: 26rpx;
+  color: #86909C;
+  margin-bottom: 20rpx;
+  font-weight: 500;
+}
+
+/* 分类选择 */
+.categoryGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.categoryItem {
+  width: calc(20% - 13rpx);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20rpx 0;
+  border-radius: 16rpx;
+  transition: all 0.2s ease;
+}
+
+.categoryItemHover {
+  background: #F7F9F8;
+}
+
+.categoryItemSelected {
+  background: #E8F3EE;
+}
+
+.categoryIconWrap {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  background: #F7F9F8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12rpx;
+  transition: all 0.2s ease;
+}
+
+.categoryItemSelected .categoryIconWrap {
+  background: linear-gradient(135deg, #7EB8A0 0%, #A5D4BE 100%);
+}
+
+.categoryIcon {
+  font-size: 40rpx;
+}
+
+.categoryName {
+  font-size: 22rpx;
+  color: #4E5969;
+}
+
+.categoryItemSelected .categoryName {
+  color: #7EB8A0;
+  font-weight: 500;
+}
+
+/* 账户选择 */
+.accountItem {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 24rpx;
+  border-radius: 12rpx;
+  transition: all 0.2s ease;
+}
+
+.accountItemHover {
+  background: #F7F9F8;
+}
+
+.accountItemSelected {
+  background: #E8F3EE;
+}
+
+.accountIcon {
+  font-size: 36rpx;
+}
+
+.accountName {
+  font-size: 28rpx;
+  color: #1D2129;
+}
+
+.accountItemSelected .accountName {
+  color: #7EB8A0;
+  font-weight: 500;
+}
+
+/* 底部数字键盘 */
+.numberKeyboard {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  height: 480rpx;
+  background: #FFFFFF;
+  border-top: 1rpx solid #E5E6EB;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* 键盘左侧类型标签 */
+.keyboardTypeLabels {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 120rpx;
+  padding: 24rpx 0;
+  background: #F7F9F8;
+  border-right: 1rpx solid #E5E6EB;
+}
+
+.keyboardTypeItem {
+  height: 100rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26rpx;
+  color: #86909C;
+  writing-mode: horizontal-tb;
+  border-radius: 8rpx;
+  margin: 0 8rpx;
+  transition: all 0.2s ease;
+}
+
+.keyboardTypeActiveExpense {
+  background: linear-gradient(135deg, #FF9F43 0%, #FFB770 100%);
+  color: #FFFFFF;
+  font-weight: 500;
+  box-shadow: 0 4rpx 12rpx rgba(255, 159, 67, 0.3);
+}
+
+.keyboardTypeActiveIncome {
+  background: linear-gradient(135deg, #7EB8A0 0%, #A5D4BE 100%);
+  color: #FFFFFF;
+  font-weight: 500;
   box-shadow: 0 4rpx 12rpx rgba(126, 184, 160, 0.3);
 }
 
-.submitButtonHover {
-  opacity: 0.9;
-  transform: scale(0.98);
+.keyboardTypeActiveTransfer {
+  background: linear-gradient(135deg, #4E83FD 0%, #7FA5FE 100%);
+  color: #FFFFFF;
+  font-weight: 500;
+  box-shadow: 0 4rpx 12rpx rgba(78, 131, 253, 0.3);
 }
 
-.submitButtonText {
-  font-size: 34rpx;
-  font-weight: 600;
+.keyboardTypeHover {
+  background: #E5E6EB;
+}
+
+/* 键盘右侧 */
+.keyboardRight {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.keyboardRow {
+  display: flex;
+  flex: 1;
+}
+
+.keyBtn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 44rpx;
+  color: #1D2129;
+  background: #FFFFFF;
+  border-right: 1rpx solid #E5E6EB;
+  border-bottom: 1rpx solid #E5E6EB;
+  transition: all 0.1s ease;
+}
+
+.keyBtnHover {
+  background: #F0F2F1;
+}
+
+.keyBtn:active {
+  background: #E5E6EB;
+  transform: scale(0.95);
+}
+
+.keyBtnOperator {
+  color: #FF9F43;
+  font-size: 36rpx;
+}
+
+.keyBtnBackspace {
+  font-size: 36rpx;
+  color: #86909C;
+}
+
+.keyBtnConfirm {
+  background: linear-gradient(180deg, #7EB8A0 0%, #5A9B82 100%);
   color: #FFFFFF;
+  font-weight: 600;
+  font-size: 32rpx;
+  border-right: none;
+}
+
+.keyBtnConfirm:hover {
+  background: linear-gradient(180deg, #6FA890 0%, #4A8B72 100%);
+}
+
+.keyBtnConfirmHover {
+  background: linear-gradient(180deg, #6FA890 0%, #4A8B72 100%);
+}
+
+.keyboardLastRow .keyBtn:last-child {
+  border-right: none;
+}
+
+/* 最后一行去掉下边框（最后一个元素也去掉右边框） */
+.keyboardLastRow .keyBtn {
+  border-bottom: none;
 }

@@ -1,6 +1,6 @@
 {
   "navigationBarTitleText": "记一笔",
-  "navigationBarBackgroundColor": "#7EB8A0",
-  "navigationBarTextStyle": "white",
+  "navigationBarBackgroundColor": "#FFFFFF",
+  "navigationBarTextStyle": "black",
   "usingComponents": {}
 }
