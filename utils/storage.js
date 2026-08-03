@@ -116,63 +116,132 @@ function getSummary(timeRange) {
 }
 
 // 获取指定年月的报表数据
-function getReportData(year, month) {
+// granularity: 'month' - 按月统计（一年12个月），'day' - 按日统计（当月每一天）
+function getReportData(year, month, granularity = 'month') {
   const transactions = getTransactions();
-  const monthPrefix = `${year}-${String(month).padStart(2, '0')}`;
-  const monthTransactions = transactions.filter(t => t.date.startsWith(monthPrefix));
   
-  let totalIncome = 0;
-  let totalExpense = 0;
-  const categoryMap = {};
-  const trendData = {
-    expense: new Array(12).fill(0),
-    income: new Array(12).fill(0)
-  };
-  
-  monthTransactions.forEach(t => {
-    const amount = parseFloat(t.amount);
-    const day = parseInt(t.date.split(' ')[0].split('-')[2]);
-    // 将每天的数据分配到对应的索引位置（12个点对应整个月的分布）
-    const monthIndex = Math.min(Math.floor((day - 1) / 3), 11);
+  if (granularity === 'day') {
+    // 按日统计：获取当月每一天的数据
+    const monthPrefix = `${year}-${String(month).padStart(2, '0')}`;
+    const monthTransactions = transactions.filter(t => t.date.startsWith(monthPrefix));
     
-    if (t.type === 'income') {
-      totalIncome += amount;
-      trendData.income[monthIndex] += amount;
-    } else if (t.type === 'expense' || t.type === 'transfer') {
-      totalExpense += amount;
-      trendData.expense[monthIndex] += amount;
+    // 获取当月的天数
+    const daysInMonth = new Date(year, month, 0).getDate();
+    
+    let totalIncome = 0;
+    let totalExpense = 0;
+    const categoryMap = {};
+    const trendData = {
+      expense: new Array(daysInMonth).fill(0),
+      income: new Array(daysInMonth).fill(0)
+    };
+    const dayLabels = [];
+    
+    for (let i = 1; i <= daysInMonth; i++) {
+      dayLabels.push(`${i}日`);
     }
     
-    // 分类统计
-    if (t.type === 'expense' || t.type === 'transfer') {
-      if (!categoryMap[t.category]) {
-        categoryMap[t.category] = {
-          category: t.category,
-          icon: t.categoryIcon,
-          amount: 0
-        };
+    monthTransactions.forEach(t => {
+      const amount = parseFloat(t.amount);
+      const day = parseInt(t.date.split(' ')[0].split('-')[2]);
+      
+      if (t.type === 'income') {
+        totalIncome += amount;
+        trendData.income[day - 1] += amount;
+      } else if (t.type === 'expense' || t.type === 'transfer') {
+        totalExpense += amount;
+        trendData.expense[day - 1] += amount;
       }
-      categoryMap[t.category].amount += amount;
-    }
-  });
-  
-  // 计算分类百分比
-  const categoryStats = Object.values(categoryMap).map(item => ({
-    ...item,
-    amount: item.amount.toFixed(2),
-    percentage: totalExpense > 0 ? Math.round((item.amount / totalExpense) * 100) : 0
-  })).sort((a, b) => parseFloat(b.amount) - parseFloat(a.amount));
-  
-  return {
-    income: totalIncome.toFixed(2),
-    expense: totalExpense.toFixed(2),
-    balance: (totalIncome - totalExpense).toFixed(2),
-    trendData: {
-      expense: trendData.expense.map(v => parseFloat(v.toFixed(2))),
-      income: trendData.income.map(v => parseFloat(v.toFixed(2)))
-    },
-    categoryStats
-  };
+      
+      if (t.type === 'expense' || t.type === 'transfer') {
+        if (!categoryMap[t.category]) {
+          categoryMap[t.category] = {
+            category: t.category,
+            icon: t.categoryIcon,
+            amount: 0
+          };
+        }
+        categoryMap[t.category].amount += amount;
+      }
+    });
+    
+    const categoryStats = Object.values(categoryMap).map(item => ({
+      ...item,
+      amount: item.amount.toFixed(2),
+      percentage: totalExpense > 0 ? Math.round((item.amount / totalExpense) * 100) : 0
+    })).sort((a, b) => parseFloat(b.amount) - parseFloat(a.amount));
+    
+    return {
+      income: totalIncome.toFixed(2),
+      expense: totalExpense.toFixed(2),
+      balance: (totalIncome - totalExpense).toFixed(2),
+      trendData: {
+        expense: trendData.expense.map(v => parseFloat(v.toFixed(2))),
+        income: trendData.income.map(v => parseFloat(v.toFixed(2)))
+      },
+      trendLabels: dayLabels,
+      trendDays: Array.from({length: daysInMonth}, (_, i) => i + 1),
+      categoryStats,
+      granularity: 'day'
+    };
+  } else {
+    // 按月统计：获取一年12个月的数据
+    const yearPrefix = `${year}`;
+    const yearTransactions = transactions.filter(t => t.date.startsWith(yearPrefix));
+    
+    let totalIncome = 0;
+    let totalExpense = 0;
+    const categoryMap = {};
+    const trendData = {
+      expense: new Array(12).fill(0),
+      income: new Array(12).fill(0)
+    };
+    const monthLabels = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+    
+    yearTransactions.forEach(t => {
+      const amount = parseFloat(t.amount);
+      const transMonth = parseInt(t.date.split(' ')[0].split('-')[1]) - 1;
+      
+      if (t.type === 'income') {
+        totalIncome += amount;
+        trendData.income[transMonth] += amount;
+      } else if (t.type === 'expense' || t.type === 'transfer') {
+        totalExpense += amount;
+        trendData.expense[transMonth] += amount;
+      }
+      
+      if (t.type === 'expense' || t.type === 'transfer') {
+        if (!categoryMap[t.category]) {
+          categoryMap[t.category] = {
+            category: t.category,
+            icon: t.categoryIcon,
+            amount: 0
+          };
+        }
+        categoryMap[t.category].amount += amount;
+      }
+    });
+    
+    const categoryStats = Object.values(categoryMap).map(item => ({
+      ...item,
+      amount: item.amount.toFixed(2),
+      percentage: totalExpense > 0 ? Math.round((item.amount / totalExpense) * 100) : 0
+    })).sort((a, b) => parseFloat(b.amount) - parseFloat(a.amount));
+    
+    return {
+      income: totalIncome.toFixed(2),
+      expense: totalExpense.toFixed(2),
+      balance: (totalIncome - totalExpense).toFixed(2),
+      trendData: {
+        expense: trendData.expense.map(v => parseFloat(v.toFixed(2))),
+        income: trendData.income.map(v => parseFloat(v.toFixed(2)))
+      },
+      trendLabels: monthLabels,
+      trendMonths: Array.from({length: 12}, (_, i) => i + 1),
+      categoryStats,
+      granularity: 'month'
+    };
+  }
 }
 
 // 格式化日期

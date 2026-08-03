@@ -44,6 +44,21 @@
         <view class="chartTab {{chartType === 'income' ? 'chartTabActive' : ''}}" bindtap="onChartTypeChange" data-type="income" hover-class="chartTabHover">收入</view>
       </view>
     </view>
+    <!-- 时间粒度切换 -->
+    <view class="granularityTabs">
+      <view 
+        class="granularityTab {{granularity === 'day' ? 'granularityTabActive' : ''}}" 
+        bindtap="onGranularityChange" 
+        data-type="day"
+        hover-class="granularityTabHover"
+      >按日</view>
+      <view 
+        class="granularityTab {{granularity === 'month' ? 'granularityTabActive' : ''}}" 
+        bindtap="onGranularityChange" 
+        data-type="month"
+        hover-class="granularityTabHover"
+      >按月</view>
+    </view>
     <view class="chartContainer">
       <canvas canvas-id="trendChart" id="trendChart" class="chartCanvas" style="width:{{canvasWidth}}px;height:{{canvasHeight}}px;" bindtouchstart="onChartTouchStart" bindtouchmove="onChartTouchMove"></canvas>
     </view>

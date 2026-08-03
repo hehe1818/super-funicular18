@@ -9,14 +9,17 @@ Page({
     currentYear: 2026,
     currentMonth: 7,
     displayDate: '2026年7月',
+    granularity: 'day', // 'day' - 按日统计, 'month' - 按月统计
     summaryData: {
       income: '0.00',
       expense: '0.00',
       balance: '0.00',
       trendData: {
-        expense: [25.5, 68, 18, 45, 128, 35, 25, 18, 30, 22, 15],
-        income: [0, 0, 50, 0, 200, 0, 0, 0, 1500, 0, 0, 0]
-      }
+        expense: [],
+        income: []
+      },
+      trendLabels: [],
+      granularity: 'day'
     },
     categoryStats: [],
     chartType: 'expense',
@@ -44,7 +47,9 @@ Page({
   },
 
   loadData() {
-    const data = storage.getReportData(this.data.currentYear, this.data.currentMonth);
+    const { currentYear, currentMonth, granularity } = this.data;
+    const data = storage.getReportData(currentYear, currentMonth, granularity);
+    
     this.setData({
       summaryData: data,
       categoryStats: data.categoryStats
@@ -68,6 +73,14 @@ Page({
     }, 600);
   },
 
+  onGranularityChange(e) {
+    const granularity = e.currentTarget.dataset.type;
+    if (granularity === this.data.granularity) return;
+    
+    this.setData({ granularity });
+    this.loadData();
+  },
+
   drawChart() {
     const ctx = wx.createCanvasContext('trendChart');
     const data = this.data.summaryData;
@@ -76,19 +89,21 @@ Page({
 
     const trendKey = this.data.chartType === 'expense' ? 'expense' : 'income';
     const values = data.trendData[trendKey];
+    const labels = data.trendLabels || [];
     const width = this.data.canvasWidth;
     const height = this.data.canvasHeight;
     
     if (width <= 0 || height <= 0) return;
+    if (!values || values.length === 0) return;
 
-    const padding = { top: 20, right: 15, bottom: 30, left: 40 };
+    const padding = { top: 20, right: 15, bottom: 35, left: 45 };
     const chartWidth = width - padding.left - padding.right;
     const chartHeight = height - padding.top - padding.bottom;
 
     // 找到最大值，确保图表有意义
     const maxVal = Math.max(...values);
     const maxValue = maxVal > 0 ? Math.ceil(maxVal * 1.2) : 10;
-    const stepX = chartWidth / (values.length - 1);
+    const stepX = values.length > 1 ? chartWidth / (values.length - 1) : 0;
 
     // 清除画布
     ctx.clearRect(0, 0, width, height);
@@ -116,12 +131,24 @@ Page({
     ctx.setTextAlign('left');
 
     // 绘制X轴标签
-    const monthNames = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
     ctx.setFillStyle('#86909C');
-    for (let i = 0; i < values.length; i++) {
+    ctx.setFontSize(10);
+    
+    // 根据数据长度决定显示策略
+    const totalPoints = values.length;
+    let labelStep = 1;
+    if (totalPoints > 12) {
+      // 数据点多时，每隔几个显示一个标签
+      labelStep = Math.ceil(totalPoints / 10);
+    }
+    
+    for (let i = 0; i < totalPoints; i++) {
+      // 只显示部分标签以避免重叠
+      if (i % labelStep !== 0 && i !== totalPoints - 1) continue;
+      
       const x = padding.left + stepX * i;
       ctx.setTextAlign('center');
-      ctx.fillText(monthNames[i], x, height - padding.bottom + 15);
+      ctx.fillText(labels[i] || `${i + 1}`, x, height - padding.bottom + 15);
     }
     ctx.setTextAlign('left');
 
@@ -238,10 +265,18 @@ Page({
   },
 
   updateDate(year, month) {
+    const { granularity } = this.data;
+    let displayDate = `${year}年${month}月`;
+    if (granularity === 'day') {
+      displayDate = `${year}年${month}月`;
+    } else {
+      displayDate = `${year}年`;
+    }
+    
     this.setData({
       currentYear: year,
       currentMonth: month,
-      displayDate: `${year}年${month}月`,
+      displayDate: displayDate,
       dateIndex: [year === 2026 ? 1 : 0, month - 1]
     });
     this.loadData();
@@ -273,19 +308,28 @@ Page({
     
     const trendKey = this.data.chartType === 'expense' ? 'expense' : 'income';
     const values = data.trendData[trendKey];
-    const paddingLeft = 40;
+    const labels = data.trendLabels || [];
+    const paddingLeft = 45;
     const paddingRight = 15;
     const chartWidth = this.data.canvasWidth - paddingLeft - paddingRight;
-    const stepX = chartWidth / (values.length - 1);
+    const stepX = values.length > 1 ? chartWidth / (values.length - 1) : 0;
     
     const index = Math.round((x - paddingLeft) / stepX);
     
     if (index >= 0 && index < values.length) {
-      const monthNames = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
       const value = values[index];
+      const label = labels[index] || '';
+      const { granularity, currentYear, currentMonth } = this.data;
+      
+      let title = '';
+      if (granularity === 'day') {
+        title = `${currentYear}年${currentMonth}月${index + 1}日: ¥${value.toFixed(2)}`;
+      } else {
+        title = `${label}: ¥${value.toFixed(2)}`;
+      }
       
       wx.showToast({
-        title: `${monthNames[index]}: ¥${value.toFixed(2)}`,
+        title: title,
         icon: 'none',
         duration: 1500
       });
