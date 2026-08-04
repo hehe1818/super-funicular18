@@ -69,7 +69,7 @@
   <!-- 最近流水 -->
   <view class="sectionHeader">
     <text class="sectionTitle">最近流水</text>
-    <view class="sectionMore">
+    <view class="sectionMore" bindtap="onViewAll" hover-class="sectionMoreHover">
       <text>查看全部</text>
       <text>›</text>
     </view>

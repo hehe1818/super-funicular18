@@ -1,9 +1,98 @@
 <!--pages/search/index.wxml-->
 <view class="searchPage">
-  <input class="searchInput" placeholder="搜索账单备注、分类..." />
-  <view class="placeholderContent">
-    <view class="placeholderIcon">🔍</view>
-    <text class="placeholderTitle">搜索功能开发中</text>
-    <text class="placeholderDesc">敬请期待</text>
+  <!-- 搜索框 -->
+  <view class="searchHeader">
+    <view class="searchBox">
+      <text class="searchIcon">🔍</text>
+      <input 
+        class="searchInput" 
+        placeholder="搜索账单备注、分类..." 
+        value="{{keyword}}"
+        bindinput="onInputChange"
+        bindconfirm="onSearchConfirm"
+        confirm-type="search"
+        focus="{{true}}"
+      />
+      <view wx:if="{{keyword}}" class="clearBtn" bindtap="onClearInput" hover-class="clearBtnHover">✕</view>
+    </view>
+    <view class="cancelBtn" bindtap="onSearchConfirm" hover-class="cancelBtnHover">搜索</view>
+  </view>
+
+  <!-- 筛选标签 -->
+  <view wx:if="{{hasSearched}}" class="filterTabs">
+    <view class="filterTab {{filterType === 'all' ? 'filterTabActive' : ''}}" bindtap="onFilterChange" data-type="all" hover-class="filterTabHover">全部</view>
+    <view class="filterTab {{filterType === 'expense' ? 'filterTabActive' : ''}}" bindtap="onFilterChange" data-type="expense" hover-class="filterTabHover">支出</view>
+    <view class="filterTab {{filterType === 'income' ? 'filterTabActive' : ''}}" bindtap="onFilterChange" data-type="income" hover-class="filterTabHover">收入</view>
+  </view>
+
+  <!-- 搜索前：搜索历史 -->
+  <view wx:if="{{!hasSearched}}" class="historySection">
+    <view wx:if="{{searchHistory.length > 0}}" class="historyContent">
+      <view class="historyHeader">
+        <text class="historyTitle">搜索历史</text>
+        <view class="clearHistoryBtn" bindtap="clearSearchHistory" hover-class="clearHistoryBtnHover">
+          <text class="clearHistoryIcon">🗑️</text>
+          <text class="clearHistoryText">清除</text>
+        </view>
+      </view>
+      <view class="historyList">
+        <view 
+          wx:for="{{searchHistory}}" 
+          wx:key="index" 
+          class="historyItem"
+          bindtap="onHistoryTap"
+          data-keyword="{{item}}"
+          hover-class="historyItemHover"
+        >{{item}}</view>
+      </view>
+    </view>
+    <view class="hotSearch">
+      <view class="hotTitle">热门搜索</view>
+      <view class="hotList">
+        <view class="hotItem" bindtap="onHistoryTap" data-keyword="餐饮" hover-class="historyItemHover">🍜 餐饮</view>
+        <view class="hotItem" bindtap="onHistoryTap" data-keyword="购物" hover-class="historyItemHover">🛍️ 购物</view>
+        <view class="hotItem" bindtap="onHistoryTap" data-keyword="交通" hover-class="historyItemHover">🚌 交通</view>
+        <view class="hotItem" bindtap="onHistoryTap" data-keyword="学习" hover-class="historyItemHover">📚 学习</view>
+        <view class="hotItem" bindtap="onHistoryTap" data-keyword="生活费" hover-class="historyItemHover">💰 生活费</view>
+        <view class="hotItem" bindtap="onHistoryTap" data-keyword="兼职" hover-class="historyItemHover">💼 兼职</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 搜索结果 -->
+  <view wx:if="{{hasSearched}}" class="resultSection">
+    <!-- 空结果 -->
+    <view wx:if="{{isEmpty}}" class="emptyState">
+      <text class="emptyIcon">🔍</text>
+      <text class="emptyTitle">未找到相关账单</text>
+      <text class="emptyDesc">试试其他关键词吧</text>
+    </view>
+    
+    <!-- 结果列表 -->
+    <view wx:else class="resultList">
+      <view class="resultCount">共找到 {{searchResults.length}} 条相关记录</view>
+      <view 
+        wx:for="{{searchResults}}" 
+        wx:key="id" 
+        class="resultItem {{item.type === 'income' ? 'resultItemIncome' : 'resultItemExpense'}}"
+        bindtap="onResultTap"
+        data-id="{{item.id}}"
+        hover-class="resultItemHover"
+      >
+        <view class="resultIconWrap">
+          <text class="resultIcon">{{item.categoryIcon || '📌'}}</text>
+        </view>
+        <view class="resultInfo">
+          <view class="resultTitle">
+            <text class="resultCategory">{{item.category}}</text>
+            <text wx:if="{{item.note}}" class="resultNote"> · {{item.note}}</text>
+          </view>
+          <view class="resultDate">{{item.displayDate}}</view>
+        </view>
+        <view class="resultAmount {{item.type === 'income' ? 'amountIncome' : 'amountExpense'}}">
+          <text>{{item.type === 'income' ? '+' : '-'}}¥{{item.displayAmount}}</text>
+        </view>
+      </view>
+    </view>
   </view>
 </view>

@@ -268,18 +268,217 @@ function formatDisplayDate(dateStr) {
   return `${month}-${day} ${hours}:${minutes}`;
 }
 
+// 获取分页交易记录
+function getTransactionsPaged(page = 1, pageSize = 20, filters = {}) {
+  let transactions = getTransactions();
+  
+  // 应用筛选条件
+  if (filters.type && filters.type !== 'all') {
+    if (filters.type === 'expense') {
+      transactions = transactions.filter(t => t.type === 'expense' || t.type === 'transfer');
+    } else if (filters.type === 'income') {
+      transactions = transactions.filter(t => t.type === 'income');
+    }
+  }
+  
+  if (filters.startDate) {
+    transactions = transactions.filter(t => t.date >= filters.startDate);
+  }
+  
+  if (filters.endDate) {
+    transactions = transactions.filter(t => t.date <= filters.endDate + ' 23:59');
+  }
+  
+  // 按日期排序（最新的在前）
+  transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+  
+  const total = transactions.length;
+  const totalPages = Math.ceil(total / pageSize);
+  const startIndex = (page - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const data = transactions.slice(startIndex, endIndex);
+  
+  return {
+    data,
+    pagination: {
+      page,
+      pageSize,
+      total,
+      totalPages,
+      hasMore: page < totalPages
+    }
+  };
+}
+
 // 生成唯一ID
 function generateId() {
   return Date.now().toString(36) + Math.random().toString(36).substr(2);
 }
 
+// ============ 预算管理功能 ============
+
+// 默认分类预算配置
+const DEFAULT_CATEGORY_BUDGETS = {
+  '餐饮': { icon: '🍜', budget: 800, color: '#FF9F43' },
+  '购物': { icon: '🛍️', budget: 500, color: '#EE5A24' },
+  '交通': { icon: '🚌', budget: 200, color: '#0652DD' },
+  '娱乐': { icon: '🎬', budget: 300, color: '#8E44AD' },
+  '学习': { icon: '📚', budget: 400, color: '#00B894' },
+  '医疗': { icon: '💊', budget: 150, color: '#EA2027' },
+  '居家': { icon: '🏠', budget: 300, color: '#1289A7' },
+  '服饰': { icon: '👕', budget: 400, color: '#D980FA' },
+  '其他': { icon: '📌', budget: 200, color: '#95A5A6' }
+};
+
+// 获取预算配置
+function getBudgetConfig() {
+  try {
+    const data = wx.getStorageSync('budgetConfig');
+    if (data) {
+      return data;
+    }
+  } catch (e) {
+    console.error('获取预算配置失败', e);
+  }
+  // 返回默认配置（总预算为所有分类预算之和）
+  const totalBudget = Object.values(DEFAULT_CATEGORY_BUDGETS).reduce((sum, c) => sum + c.budget, 0);
+  return {
+    totalBudget: totalBudget,
+    categories: { ...DEFAULT_CATEGORY_BUDGETS }
+  };
+}
+
+// 保存预算配置
+function saveBudgetConfig(config) {
+  try {
+    wx.setStorageSync('budgetConfig', config);
+    return true;
+  } catch (e) {
+    console.error('保存预算配置失败', e);
+    return false;
+  }
+}
+
+// 更新总预算
+function updateTotalBudget(totalBudget) {
+  const config = getBudgetConfig();
+  config.totalBudget = totalBudget;
+  return saveBudgetConfig(config);
+}
+
+// 更新分类预算
+function updateCategoryBudget(category, budget) {
+  const config = getBudgetConfig();
+  if (config.categories[category]) {
+    config.categories[category].budget = budget;
+  } else {
+    // 如果分类不存在，添加新分类
+    config.categories[category] = {
+      icon: '📌',
+      budget: budget,
+      color: '#95A5A6'
+    };
+  }
+  return saveBudgetConfig(config);
+}
+
+// 获取本月预算使用情况
+function getBudgetUsage() {
+  const config = getBudgetConfig();
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const monthStart = `${year}-${String(month).padStart(2, '0')}-01`;
+  
+  // 获取本月所有支出记录
+  const transactions = getTransactions();
+  const monthExpenses = transactions.filter(t => {
+    if (t.type === 'income') return false;
+    return t.date >= monthStart;
+  });
+  
+  // 计算每个分类的支出
+  const categoryUsage = {};
+  let totalUsed = 0;
+  
+  monthExpenses.forEach(t => {
+    const category = t.category || '其他';
+    if (!categoryUsage[category]) {
+      categoryUsage[category] = 0;
+    }
+    categoryUsage[category] += parseFloat(t.amount);
+    totalUsed += parseFloat(t.amount);
+  });
+  
+  // 构建分类预算使用详情
+  const categoryDetails = Object.keys(config.categories).map(category => {
+    const info = config.categories[category];
+    const used = categoryUsage[category] || 0;
+    const budget = info.budget;
+    const percentage = budget > 0 ? (used / budget) * 100 : 0;
+    const remaining = budget - used;
+    const status = percentage >= 100 ? 'over' : percentage >= 80 ? 'warning' : 'normal';
+    
+    return {
+      category,
+      icon: info.icon,
+      color: info.color,
+      budget: budget,
+      used: used,
+      remaining: remaining,
+      percentage: percentage,
+      status: status
+    };
+  });
+  
+  // 添加未配置但有支出的分类
+  Object.keys(categoryUsage).forEach(category => {
+    if (!config.categories[category]) {
+      const used = categoryUsage[category];
+      const budget = 0;
+      const percentage = 0;
+      categoryDetails.push({
+        category: category,
+        icon: '📌',
+        color: '#95A5A6',
+        budget: budget,
+        used: used,
+        remaining: -used,
+        percentage: percentage,
+        status: 'none',
+        unconfigured: true
+      });
+    }
+  });
+  
+  // 计算总预算使用率
+  const totalBudget = config.totalBudget;
+  const totalPercentage = totalBudget > 0 ? (totalUsed / totalBudget) * 100 : 0;
+  
+  return {
+    year: year,
+    month: month,
+    totalBudget: totalBudget,
+    totalUsed: totalUsed,
+    totalRemaining: totalBudget - totalUsed,
+    totalPercentage: totalPercentage,
+    categoryDetails: categoryDetails.sort((a, b) => b.percentage - a.percentage)
+  };
+}
+
 module.exports = {
   getAllData,
   getTransactions,
+  getTransactionsPaged,
   addTransaction,
   getSummary,
   getReportData,
   formatDate,
   formatDisplayDate,
-  generateId
+  generateId,
+  getBudgetConfig,
+  saveBudgetConfig,
+  updateTotalBudget,
+  updateCategoryBudget,
+  getBudgetUsage
 };

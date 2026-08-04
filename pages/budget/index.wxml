@@ -1,0 +1,181 @@
+<!--pages/budget/index.wxml-->
+<view class="budgetPage">
+  <!-- 总预算概览 -->
+  <view class="budgetHeader">
+    <view class="monthLabel">{{year}}年{{month}}月预算</view>
+    <view class="totalBudgetCard">
+      <!-- 环形进度图 -->
+      <view class="ringContainer">
+        <view class="ringWrapper">
+          <canvas canvas-id="totalRing" class="ringCanvas"></canvas>
+          <view class="ringCenter">
+            <text class="ringPercentage">{{totalPercentage}}%</text>
+            <text class="ringLabel">已使用</text>
+          </view>
+        </view>
+      </view>
+      <view class="totalInfo">
+        <view class="totalRow">
+          <text class="totalLabel">总预算</text>
+          <view class="totalValueRow" bindtap="onEditTotalBudget" hover-class="totalValueRowHover">
+            <text class="totalValue">¥{{totalBudget}}</text>
+            <text class="editIcon">✎</text>
+          </view>
+        </view>
+        <view class="totalRow">
+          <text class="totalLabel">已使用</text>
+          <text class="totalValue totalUsed">¥{{totalUsed}}</text>
+        </view>
+        <view class="totalRow">
+          <text class="totalLabel">剩余</text>
+          <text class="totalValue {{isTotalOverBudget ? 'totalOver' : 'totalRemaining'}}">¥{{totalRemaining}}</text>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 总预算进度条 -->
+    <view class="totalProgressBar">
+      <view class="totalProgressFill" style="width: {{totalProgressWidth}}%; background: {{totalProgressBg}}"></view>
+      <view wx:if="{{showProgressWarning}}" class="progressWarning"></view>
+    </view>
+    
+    <view wx:if="{{showAlertOver}}" class="budgetAlert alertOver">
+      <text class="alertIcon">⚠️</text>
+      <text class="alertText">本月预算已超支！请控制支出</text>
+    </view>
+    <view wx:elif="{{showAlertWarning}}" class="budgetAlert alertWarning">
+      <text class="alertIcon">⚡</text>
+      <text class="alertText">本月预算即将用完，请注意</text>
+    </view>
+  </view>
+
+  <!-- 分类预算统计 -->
+  <view class="sectionHeader">
+    <text class="sectionTitle">分类预算</text>
+    <view class="sectionActions">
+      <view class="addCategoryBtn" bindtap="onAddCategory" hover-class="addCategoryBtnHover">+ 新增分类</view>
+    </view>
+  </view>
+
+  <!-- 分类预算列表 -->
+  <view class="categoryList">
+    <view wx:for="{{categoryDetails}}" wx:key="category" class="categoryCard {{item.cardClass}}">
+      <view class="categoryHeader">
+        <view class="categoryLeft">
+          <view class="categoryIconWrap" style="background: {{item.color}}20">
+            <text class="categoryIcon">{{item.icon}}</text>
+          </view>
+          <view class="categoryInfo">
+            <text class="categoryName">{{item.category}}</text>
+            <text class="categorySub">{{item.statusText}}</text>
+          </view>
+        </view>
+        <view class="categoryActions">
+          <view class="editBudgetBtn" catchtap="onEditCategoryBudget" data-category="{{item.category}}" hover-class="editBudgetBtnHover">
+            <text class="editBudgetIcon">✏️</text>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 进度条 -->
+      <view class="categoryProgressBar">
+        <view class="categoryProgressFill" style="width: {{item.displayPercentage}}%; background: {{item.progressBg}}"></view>
+      </view>
+      
+      <!-- 金额信息 -->
+      <view class="categoryFooter">
+        <view class="categoryAmount">
+          <text class="amountUsed">已用 ¥{{item.used}}</text>
+          <text class="amountDivider">/</text>
+          <text class="amountBudget">预算 ¥{{item.budget}}</text>
+        </view>
+        <text class="percentageText {{item.percentageClass}}">{{item.percentage}}%</text>
+      </view>
+      
+      <!-- 剩余/超支 -->
+      <view wx:if="{{item.hasBudget}}" class="categoryRemaining">
+        <text class="remainingText {{item.remainingClass}}">
+          {{item.status === 'over' ? '已超支 ¥' + item.overspentAmount : '剩余 ¥' + item.remainingAmount}}
+        </text>
+      </view>
+      <view wx:else class="categoryUnconfigured">
+        <text class="unconfiguredText">未设置预算</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view wx:if="{{categoryDetails.length === 0}}" class="emptyState">
+    <text class="emptyIcon">💰</text>
+    <text class="emptyTitle">暂无预算设置</text>
+    <text class="emptyDesc">点击下方按钮设置你的预算</text>
+    <view class="emptyBtn" bindtap="onEditTotalBudget" hover-class="emptyBtnHover">设置预算</view>
+  </view>
+
+  <!-- 编辑总预算弹窗 -->
+  <view wx:if="{{showTotalModal}}" class="modalMask" bindtap="onCloseTotalModal">
+    <view class="modalContent" catchtap="">
+      <view class="modalHeader">
+        <text class="modalTitle">设置总预算</text>
+        <view class="modalClose" bindtap="onCloseTotalModal" hover-class="modalCloseHover">✕</view>
+      </view>
+      <view class="modalBody">
+        <view class="inputRow">
+          <text class="inputLabel">本月总预算</text>
+          <view class="inputWrapper">
+            <text class="inputPrefix">¥</text>
+            <input class="budgetInput" type="digit" value="{{tempTotalBudget}}" bindinput="onTotalBudgetInput" placeholder="输入预算金额" focus="{{true}}" />
+          </view>
+        </view>
+        <view class="quickAmounts">
+          <view class="quickAmountBtn" bindtap="onQuickTotalBudget" data-amount="1000" hover-class="quickAmountBtnHover">¥1000</view>
+          <view class="quickAmountBtn" bindtap="onQuickTotalBudget" data-amount="2000" hover-class="quickAmountBtnHover">¥2000</view>
+          <view class="quickAmountBtn" bindtap="onQuickTotalBudget" data-amount="3000" hover-class="quickAmountBtnHover">¥3000</view>
+          <view class="quickAmountBtn" bindtap="onQuickTotalBudget" data-amount="5000" hover-class="quickAmountBtnHover">¥5000</view>
+        </view>
+      </view>
+      <view class="modalFooter">
+        <view class="modalBtn modalBtnCancel" bindtap="onCloseTotalModal" hover-class="modalBtnHover">取消</view>
+        <view class="modalBtn modalBtnConfirm" bindtap="onSaveTotalBudget" hover-class="modalBtnHover">保存</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 编辑分类预算弹窗 -->
+  <view wx:if="{{showCategoryModal}}" class="modalMask" bindtap="onCloseCategoryModal">
+    <view class="modalContent" catchtap="">
+      <view class="modalHeader">
+        <text class="modalTitle">设置 {{editCategory}} 预算</text>
+        <view class="modalClose" bindtap="onCloseCategoryModal" hover-class="modalCloseHover">✕</view>
+      </view>
+      <view class="modalBody">
+        <view class="categoryPreview">
+          <view class="previewIcon" style="background: {{editCategoryColor}}20">
+            <text>{{editCategoryIcon}}</text>
+          </view>
+          <view class="previewInfo">
+            <text class="previewName">{{editCategory}}</text>
+            <text class="previewUsed">已使用 ¥{{editCategoryUsed}}</text>
+          </view>
+        </view>
+        <view class="inputRow">
+          <text class="inputLabel">月预算金额</text>
+          <view class="inputWrapper">
+            <text class="inputPrefix">¥</text>
+            <input class="budgetInput" type="digit" value="{{tempCategoryBudget}}" bindinput="onCategoryBudgetInput" placeholder="输入预算金额" focus="{{true}}" />
+          </view>
+        </view>
+        <view class="quickAmounts">
+          <view class="quickAmountBtn" bindtap="onQuickCategoryBudget" data-amount="100" hover-class="quickAmountBtnHover">¥100</view>
+          <view class="quickAmountBtn" bindtap="onQuickCategoryBudget" data-amount="200" hover-class="quickAmountBtnHover">¥200</view>
+          <view class="quickAmountBtn" bindtap="onQuickCategoryBudget" data-amount="500" hover-class="quickAmountBtnHover">¥500</view>
+          <view class="quickAmountBtn" bindtap="onQuickCategoryBudget" data-amount="1000" hover-class="quickAmountBtnHover">¥1000</view>
+        </view>
+      </view>
+      <view class="modalFooter">
+        <view class="modalBtn modalBtnCancel" bindtap="onCloseCategoryModal" hover-class="modalBtnHover">取消</view>
+        <view class="modalBtn modalBtnConfirm" bindtap="onSaveCategoryBudget" hover-class="modalBtnHover">保存</view>
+      </view>
+    </view>
+  </view>
+</view>

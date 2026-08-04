@@ -65,6 +65,12 @@ Page({
     });
   },
 
+  onViewAll() {
+    wx.navigateTo({
+      url: '/pages/transactionList/index'
+    });
+  },
+
   onServiceTap() {
     wx.navigateTo({
       url: '/pages/service/index'
@@ -74,11 +80,17 @@ Page({
   onQuickAction(e) {
     const type = e.currentTarget.dataset.type;
     switch (type) {
+      case 'transaction':
+        wx.navigateTo({ url: '/pages/transactionList/index' });
+        break;
       case 'report':
         wx.switchTab({ url: '/pages/report/index' });
         break;
       case 'asset':
         wx.switchTab({ url: '/pages/asset/index' });
+        break;
+      case 'budget':
+        wx.navigateTo({ url: '/pages/budget/index' });
         break;
       default:
         wx.showToast({

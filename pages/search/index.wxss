@@ -3,40 +3,329 @@
 .searchPage {
   min-height: 100vh;
   background: #F7F9F8;
-  padding: 32rpx;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* 搜索头部 */
+.searchHeader {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 24rpx;
+  background: #FFFFFF;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.searchBox {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  height: 72rpx;
+  background: #F0F2F1;
+  border-radius: 36rpx;
+  padding: 0 24rpx;
+}
+
+.searchIcon {
+  font-size: 28rpx;
+  margin-right: 12rpx;
 }
 
 .searchInput {
-  width: 100%;
-  height: 88rpx;
-  background: #FFFFFF;
-  border-radius: 48rpx;
-  padding: 0 48rpx;
+  flex: 1;
+  height: 72rpx;
   font-size: 28rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+  color: #1D2129;
 }
 
-.placeholderContent {
+.clearBtn {
+  width: 40rpx;
+  height: 40rpx;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 256rpx 32rpx;
+  background: #C9CDD4;
+  color: #FFFFFF;
+  border-radius: 50%;
+  font-size: 24rpx;
+  margin-left: 12rpx;
+  transition: all 0.2s ease;
 }
 
-.placeholderIcon {
-  font-size: 100rpx;
+.clearBtnHover {
+  background: #86909C;
+  transform: scale(0.9);
+}
+
+.cancelBtn {
+  margin-left: 24rpx;
+  font-size: 28rpx;
+  color: #7EB8A0;
+  font-weight: 500;
+  padding: 8rpx 16rpx;
+  transition: all 0.2s ease;
+}
+
+.cancelBtnHover {
+  opacity: 0.7;
+}
+
+/* 筛选标签 */
+.filterTabs {
+  display: flex;
+  padding: 24rpx;
+  gap: 16rpx;
+}
+
+.filterTab {
+  padding: 12rpx 32rpx;
+  font-size: 26rpx;
+  color: #86909C;
+  background: #FFFFFF;
+  border-radius: 32rpx;
+  transition: all 0.25s ease;
+}
+
+.filterTabActive {
+  background: linear-gradient(135deg, #7EB8A0 0%, #A5D4BE 100%);
+  color: #FFFFFF;
+  font-weight: 500;
+  box-shadow: 0 4rpx 12rpx rgba(126, 184, 160, 0.3);
+}
+
+.filterTabHover {
+  opacity: 0.8;
+  transform: scale(0.95);
+}
+
+/* 搜索历史 */
+.historySection {
+  padding: 0 24rpx;
+}
+
+.historyContent {
   margin-bottom: 48rpx;
 }
 
-.placeholderTitle {
-  font-size: 34rpx;
+.historyHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.historyTitle {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1D2129;
+}
+
+.clearHistoryBtn {
+  display: flex;
+  align-items: center;
+  padding: 8rpx 16rpx;
+  transition: all 0.2s ease;
+}
+
+.clearHistoryBtnHover {
+  opacity: 0.7;
+}
+
+.clearHistoryIcon {
+  font-size: 28rpx;
+  margin-right: 8rpx;
+}
+
+.clearHistoryText {
+  font-size: 24rpx;
+  color: #86909C;
+}
+
+.historyList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.historyItem {
+  padding: 16rpx 28rpx;
+  background: #FFFFFF;
+  border-radius: 8rpx;
+  font-size: 26rpx;
+  color: #4E5969;
+  transition: all 0.2s ease;
+  border: 1rpx solid #F0F2F1;
+}
+
+.historyItemHover {
+  background: #F7F9F8;
+  transform: scale(0.95);
+}
+
+/* 热门搜索 */
+.hotSearch {
+  margin-top: 32rpx;
+}
+
+.hotTitle {
+  font-size: 28rpx;
   font-weight: 600;
   color: #1D2129;
   margin-bottom: 24rpx;
 }
 
-.placeholderDesc {
-  font-size: 28rpx;
+.hotList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.hotItem {
+  padding: 16rpx 28rpx;
+  background: #FFFFFF;
+  border-radius: 8rpx;
+  font-size: 26rpx;
+  color: #4E5969;
+  transition: all 0.2s ease;
+  border: 1rpx solid #F0F2F1;
+}
+
+.hotItem:hover {
+  background: #F7F9F8;
+}
+
+/* 结果区域 */
+.resultSection {
+  padding: 0 24rpx;
+}
+
+.resultCount {
+  font-size: 26rpx;
+  color: #86909C;
+  margin-bottom: 24rpx;
+}
+
+.resultList {
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
+/* 结果项 */
+.resultItem {
+  display: flex;
+  align-items: center;
+  padding: 32rpx 24rpx;
+  border-bottom: 1rpx solid #F7F9F8;
+  transition: all 0.2s ease;
+}
+
+.resultItem:last-child {
+  border-bottom: none;
+}
+
+.resultItemHover {
+  background: #F7F9F8;
+}
+
+.resultItemIncome {
+  border-left: 4rpx solid #7EB8A0;
+}
+
+.resultItemExpense {
+  border-left: 4rpx solid #FF9F43;
+}
+
+.resultIconWrap {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  background: #F7F9F8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 24rpx;
+}
+
+.resultItemIncome .resultIconWrap {
+  background: #E8F3EE;
+}
+
+.resultItemExpense .resultIconWrap {
+  background: #FFF4E8;
+}
+
+.resultIcon {
+  font-size: 40rpx;
+}
+
+.resultInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.resultTitle {
+  font-size: 30rpx;
+  color: #1D2129;
+  margin-bottom: 8rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.resultCategory {
+  font-weight: 500;
+}
+
+.resultNote {
+  color: #86909C;
+  font-weight: normal;
+  font-size: 26rpx;
+}
+
+.resultDate {
+  font-size: 24rpx;
+  color: #86909C;
+}
+
+.resultAmount {
+  font-size: 32rpx;
+  font-weight: 600;
+  margin-left: 16rpx;
+}
+
+.amountIncome {
+  color: #7EB8A0;
+}
+
+.amountExpense {
+  color: #FF9F43;
+}
+
+/* 空状态 */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 128rpx 32rpx;
+  background: #FFFFFF;
+  border-radius: 16rpx;
+}
+
+.emptyIcon {
+  font-size: 100rpx;
+  margin-bottom: 32rpx;
+  opacity: 0.5;
+}
+
+.emptyTitle {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1D2129;
+  margin-bottom: 16rpx;
+}
+
+.emptyDesc {
+  font-size: 26rpx;
   color: #86909C;
 }

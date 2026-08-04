@@ -1,0 +1,220 @@
+<!--pages/transactionList/index.wxml-->
+<view class="transactionListPage">
+  <!-- 筛选栏 -->
+  <view class="filterBar">
+    <view class="filterTabs">
+      <view 
+        class="filterTab {{activeFilter === 'all' ? 'filterTabActive' : ''}}" 
+        bindtap="onFilterChange" 
+        data-filter="all"
+        hover-class="filterTabHover"
+      >全部</view>
+      <view 
+        class="filterTab {{activeFilter === 'expense' ? 'filterTabActive filterTabExpense' : ''}}" 
+        bindtap="onFilterChange" 
+        data-filter="expense"
+        hover-class="filterTabHover"
+      >支出</view>
+      <view 
+        class="filterTab {{activeFilter === 'income' ? 'filterTabActive filterTabIncome' : ''}}" 
+        bindtap="onFilterChange" 
+        data-filter="income"
+        hover-class="filterTabHover"
+      >收入</view>
+    </view>
+    <view class="filterIcon {{currentRange !== 'all' ? 'filterIconActive' : ''}}" bindtap="onOpenFilter" hover-class="filterIconHover">
+      <text>📅</text>
+    </view>
+  </view>
+
+  <!-- 当前日期范围提示 -->
+  <view wx:if="{{currentRange !== 'all' || filterStartDate}}" class="rangeBar">
+    <view class="rangeInfo" bindtap="onOpenFilter" hover-class="rangeInfoHover">
+      <text class="rangeIcon">📆</text>
+      <text class="rangeText">{{rangeDisplayText}}</text>
+      <text class="rangeArrow">›</text>
+    </view>
+    <view class="rangeClear" bindtap="onClearDateFilter" hover-class="rangeClearHover">✕</view>
+  </view>
+
+  <!-- 快捷日期筛选 -->
+  <view class="quickRangeBar">
+    <view 
+      class="quickRangeItem {{currentRange === 'today' ? 'quickRangeItemActive' : ''}}"
+      bindtap="onQuickRange"
+      data-range="today"
+      hover-class="quickRangeItemHover"
+    >今日</view>
+    <view 
+      class="quickRangeItem {{currentRange === 'week' ? 'quickRangeItemActive' : ''}}"
+      bindtap="onQuickRange"
+      data-range="week"
+      hover-class="quickRangeItemHover"
+    >本周</view>
+    <view 
+      class="quickRangeItem {{currentRange === 'month' ? 'quickRangeItemActive' : ''}}"
+      bindtap="onQuickRange"
+      data-range="month"
+      hover-class="quickRangeItemHover"
+    >本月</view>
+    <view 
+      class="quickRangeItem {{currentRange === 'all' && !filterStartDate ? 'quickRangeItemActive' : ''}}"
+      bindtap="onQuickRange"
+      data-range="all"
+      hover-class="quickRangeItemHover"
+    >全部</view>
+    <view 
+      class="quickRangeItem {{currentRange === 'custom' ? 'quickRangeItemActive' : ''}}"
+      bindtap="onOpenFilter"
+      hover-class="quickRangeItemHover"
+    >自定义</view>
+  </view>
+
+  <!-- 汇总信息 -->
+  <view class="summaryBar">
+    <view class="summaryItem">
+      <text class="summaryLabel">总收入</text>
+      <text class="summaryValue summaryIncome">¥{{summaryIncome}}</text>
+    </view>
+    <view class="summaryDivider"></view>
+    <view class="summaryItem">
+      <text class="summaryLabel">总支出</text>
+      <text class="summaryValue summaryExpense">¥{{summaryExpense}}</text>
+    </view>
+    <view class="summaryDivider"></view>
+    <view class="summaryItem">
+      <text class="summaryLabel">结余</text>
+      <text class="summaryValue {{summaryBalance < 0 ? 'summaryNegative' : ''}}">¥{{summaryBalance}}</text>
+    </view>
+  </view>
+
+  <!-- 列表容器 -->
+  <scroll-view 
+    class="listScrollView" 
+    scroll-y 
+    bindscrolltolower="onLoadMore"
+    scroll-with-animation="{{true}}"
+    lower-threshold="100"
+  >
+    <!-- 日期分组 -->
+    <view wx:if="{{groupedData.length > 0}}" class="listContent">
+      <view wx:for="{{groupedData}}" wx:for-item="group" wx:key="date" class="dateGroup">
+        <view class="dateHeader">
+          <text class="dateText">{{group.dateLabel}}</text>
+          <text class="dateAmount">
+            <text wx:if="{{group.income > 0}}" class="dateIncome">收 ¥{{group.income}}</text>
+            <text wx:if="{{group.expense > 0}}" class="dateExpense">支 ¥{{group.expense}}</text>
+          </text>
+        </view>
+        <view class="dateGroupList">
+          <view 
+            wx:for="{{group.items}}" 
+            wx:for-item="item" 
+            wx:key="id" 
+            class="transactionItem"
+            data-id="{{item.id}}"
+            bindtap="onItemTap"
+            hover-class="transactionItemHover"
+          >
+            <view class="itemIconWrap {{item.type === 'income' ? 'itemIconIncome' : 'itemIconExpense'}}">
+              <text class="itemIcon">{{item.categoryIcon || '📌'}}</text>
+            </view>
+            <view class="itemInfo">
+              <view class="itemTitle">
+                <text class="itemCategory">{{item.category}}</text>
+              </view>
+              <view class="itemSub">
+                <text wx:if="{{item.note}}" class="itemNote">{{item.note}}</text>
+                <text wx:else class="itemNoteEmpty">无备注</text>
+              </view>
+            </view>
+            <view class="itemRight">
+              <text class="itemAmount {{item.type === 'income' ? 'amountIncome' : 'amountExpense'}}">
+                {{item.type === 'income' ? '+' : '-'}}¥{{item.amount}}
+              </text>
+              <text class="itemTime">{{item.displayTime}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 加载状态 -->
+    <view class="loadStatus">
+      <view wx:if="{{isLoading}}" class="loadingIndicator">
+        <view class="loadingSpinner"></view>
+        <text class="loadingText">加载中...</text>
+      </view>
+      <view wx:elif="{{!hasMore && totalItems > 0}}" class="noMoreData">
+        <text class="noMoreText">— 已加载全部数据 —</text>
+      </view>
+      <view wx:elif="{{totalItems === 0}}" class="emptyState">
+        <text class="emptyIcon">📒</text>
+        <text class="emptyText">暂无流水记录</text>
+        <text class="emptyHint">点击下方按钮记一笔</text>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 底部操作栏 -->
+  <view class="bottomBar">
+    <view class="totalInfo">
+      <text class="totalCount">共 {{totalItems}} 条记录</text>
+    </view>
+    <view class="addBtn" bindtap="onAddRecord" hover-class="addBtnHover">
+      <text class="addBtnText">+ 记一笔</text>
+    </view>
+  </view>
+
+  <!-- 日期筛选弹窗 -->
+  <view wx:if="{{showDateModal}}" class="modalMask" bindtap="onCloseDateModal">
+    <view class="modalContent" catchtap="">
+      <view class="modalHeader">
+        <text class="modalTitle">选择日期范围</text>
+        <view class="modalClose" bindtap="onCloseDateModal" hover-class="modalCloseHover">✕</view>
+      </view>
+      <view class="modalBody">
+        <!-- 快捷选择（点击后直接应用） -->
+        <view class="quickDateSection">
+          <text class="quickDateSectionTitle">快捷选择</text>
+          <view class="quickDateOptions">
+            <view class="quickDateBtn {{currentRange === 'today' ? 'quickDateBtnActive' : ''}}" bindtap="onQuickDate" data-range="today" hover-class="quickDateBtnHover">今日</view>
+            <view class="quickDateBtn {{currentRange === 'week' ? 'quickDateBtnActive' : ''}}" bindtap="onQuickDate" data-range="week" hover-class="quickDateBtnHover">本周</view>
+            <view class="quickDateBtn {{currentRange === 'month' ? 'quickDateBtnActive' : ''}}" bindtap="onQuickDate" data-range="month" hover-class="quickDateBtnHover">本月</view>
+          </view>
+        </view>
+        
+        <!-- 自定义日期选择 -->
+        <view class="customDateSection">
+          <text class="quickDateSectionTitle">自定义范围</text>
+          <view class="datePickerRow">
+            <text class="datePickerLabel">开始日期</text>
+            <picker mode="date" value="{{tempStartDate}}" bindchange="onStartDateChange">
+              <view class="datePickerValue {{tempStartDate ? 'datePickerValueSelected' : ''}}">{{tempStartDate || '选择日期'}}</view>
+            </picker>
+          </view>
+          <view class="datePickerRow">
+            <text class="datePickerLabel">结束日期</text>
+            <picker mode="date" value="{{tempEndDate}}" bindchange="onEndDateChange">
+              <view class="datePickerValue {{tempEndDate ? 'datePickerValueSelected' : ''}}">{{tempEndDate || '选择日期'}}</view>
+            </picker>
+          </view>
+          
+          <!-- 已选日期预览 -->
+          <view wx:if="{{tempStartDate && tempEndDate}}" class="datePreview">
+            <text class="datePreviewIcon">✓</text>
+            <text class="datePreviewText">{{tempStartDate}} 至 {{tempEndDate}}</text>
+          </view>
+          
+          <!-- 应用按钮 -->
+          <view wx:if="{{tempStartDate && tempEndDate}}" class="applyDateBtn" bindtap="applyCustomFilter" hover-class="applyDateBtnHover">
+            <text class="applyDateBtnText">应用此范围</text>
+          </view>
+        </view>
+      </view>
+      <view class="modalFooter">
+        <view class="modalBtn modalBtnCancel" bindtap="onResetFilter" hover-class="modalBtnHover">清空选择</view>
+      </view>
+    </view>
+  </view>
+</view>

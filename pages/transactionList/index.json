@@ -1,7 +1,8 @@
 {
-  "navigationBarTitleText": "搜索账单",
+  "navigationBarTitleText": "流水明细",
   "navigationBarBackgroundColor": "#FFFFFF",
   "navigationBarTextStyle": "black",
   "backgroundColor": "#F7F9F8",
+  "enablePullDownRefresh": false,
   "usingComponents": {}
 }

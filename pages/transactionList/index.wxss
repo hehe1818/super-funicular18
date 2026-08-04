@@ -1,0 +1,670 @@
+/* pages/transactionList/index.wxss */
+
+.transactionListPage {
+  min-height: 100vh;
+  background: #F7F9F8;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 筛选栏 */
+.filterBar {
+  display: flex;
+  align-items: center;
+  padding: 24rpx;
+  background: #FFFFFF;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.filterTabs {
+  flex: 1;
+  display: flex;
+  gap: 16rpx;
+}
+
+.filterTab {
+  padding: 12rpx 36rpx;
+  font-size: 26rpx;
+  color: #86909C;
+  background: #F0F2F1;
+  border-radius: 32rpx;
+  transition: all 0.25s ease;
+}
+
+.filterTabActive {
+  background: linear-gradient(135deg, #7EB8A0 0%, #A5D4BE 100%);
+  color: #FFFFFF;
+  font-weight: 500;
+  box-shadow: 0 4rpx 12rpx rgba(126, 184, 160, 0.3);
+}
+
+.filterTabActive.filterTabExpense {
+  background: linear-gradient(135deg, #FF9F43 0%, #FFB878 100%);
+  box-shadow: 0 4rpx 12rpx rgba(255, 159, 67, 0.3);
+}
+
+.filterTabActive.filterTabIncome {
+  background: linear-gradient(135deg, #7EB8A0 0%, #A5D4BE 100%);
+}
+
+.filterTabHover {
+  opacity: 0.8;
+  transform: scale(0.95);
+}
+
+.filterIcon {
+  width: 64rpx;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #F0F2F1;
+  border-radius: 50%;
+  font-size: 32rpx;
+  transition: all 0.2s ease;
+}
+
+.filterIconHover {
+  background: #E5E6EB;
+  transform: scale(0.95);
+}
+
+.filterIconActive {
+  background: #E8F3EE;
+  color: #7EB8A0;
+}
+
+/* 当前日期范围提示 */
+.rangeBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16rpx 24rpx;
+  background: #E8F3EE;
+  margin: 0 24rpx;
+  border-radius: 12rpx;
+  margin-top: 16rpx;
+}
+
+.rangeInfo {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.rangeInfoHover {
+  opacity: 0.7;
+}
+
+.rangeIcon {
+  font-size: 28rpx;
+  margin-right: 12rpx;
+}
+
+.rangeText {
+  font-size: 26rpx;
+  color: #4E5969;
+  flex: 1;
+}
+
+.rangeArrow {
+  font-size: 28rpx;
+  color: #86909C;
+}
+
+.rangeClear {
+  width: 40rpx;
+  height: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.8);
+  color: #86909C;
+  border-radius: 50%;
+  font-size: 24rpx;
+  margin-left: 16rpx;
+  transition: all 0.2s ease;
+}
+
+.rangeClearHover {
+  background: #FFFFFF;
+  color: #4E5969;
+  transform: scale(0.9);
+}
+
+/* 快捷日期筛选 */
+.quickRangeBar {
+  display: flex;
+  padding: 16rpx 24rpx;
+  gap: 12rpx;
+}
+
+.quickRangeItem {
+  flex: 1;
+  padding: 16rpx 0;
+  text-align: center;
+  font-size: 26rpx;
+  color: #4E5969;
+  background: #FFFFFF;
+  border-radius: 12rpx;
+  border: 1rpx solid #E5E6EB;
+  transition: all 0.2s ease;
+}
+
+.quickRangeItemActive {
+  background: linear-gradient(135deg, #7EB8A0 0%, #A5D4BE 100%);
+  color: #FFFFFF;
+  border-color: transparent;
+  font-weight: 500;
+  box-shadow: 0 4rpx 12rpx rgba(126, 184, 160, 0.3);
+}
+
+.quickRangeItemHover {
+  transform: scale(0.95);
+  opacity: 0.8;
+}
+
+/* 汇总信息 */
+.summaryBar {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 32rpx;
+  background: linear-gradient(135deg, #7EB8A0 0%, #A5D4BE 100%);
+  margin: 24rpx;
+  border-radius: 20rpx;
+  box-shadow: 0 8rpx 24rpx rgba(126, 184, 160, 0.2);
+}
+
+.summaryItem {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.summaryLabel {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 8rpx;
+}
+
+.summaryValue {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.summaryNegative {
+  color: #FFE4E4;
+}
+
+.summaryDivider {
+  width: 1rpx;
+  height: 60rpx;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* 列表滚动区域 */
+.listScrollView {
+  flex: 1;
+  height: calc(100vh - 400rpx);
+}
+
+.listContent {
+  padding: 0 24rpx;
+}
+
+/* 日期分组 */
+.dateGroup {
+  margin-bottom: 32rpx;
+}
+
+.dateHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16rpx 8rpx;
+}
+
+.dateText {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #4E5969;
+}
+
+.dateAmount {
+  display: flex;
+  gap: 16rpx;
+}
+
+.dateIncome {
+  font-size: 24rpx;
+  color: #7EB8A0;
+}
+
+.dateExpense {
+  font-size: 24rpx;
+  color: #FF9F43;
+}
+
+/* 日期分组列表 */
+.dateGroupList {
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+/* 交易记录项 */
+.transactionItem {
+  display: flex;
+  align-items: center;
+  padding: 28rpx 24rpx;
+  border-bottom: 1rpx solid #F7F9F8;
+  transition: all 0.2s ease;
+}
+
+.transactionItem:last-child {
+  border-bottom: none;
+}
+
+.transactionItemHover {
+  background: #F7F9F8;
+}
+
+.itemIconWrap {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 24rpx;
+  flex-shrink: 0;
+}
+
+.itemIconIncome {
+  background: #E8F3EE;
+}
+
+.itemIconExpense {
+  background: #FFF4E8;
+}
+
+.itemIcon {
+  font-size: 40rpx;
+}
+
+.itemInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.itemTitle {
+  font-size: 30rpx;
+  color: #1D2129;
+  margin-bottom: 8rpx;
+}
+
+.itemCategory {
+  font-weight: 500;
+}
+
+.itemSub {
+  font-size: 24rpx;
+}
+
+.itemNote {
+  color: #86909C;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.itemNoteEmpty {
+  color: #C9CDD4;
+  font-style: italic;
+}
+
+.itemRight {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.itemAmount {
+  font-size: 32rpx;
+  font-weight: 600;
+  margin-bottom: 8rpx;
+}
+
+.amountIncome {
+  color: #7EB8A0;
+}
+
+.amountExpense {
+  color: #FF9F43;
+}
+
+.itemTime {
+  font-size: 24rpx;
+  color: #C9CDD4;
+}
+
+/* 加载状态 */
+.loadStatus {
+  padding: 32rpx 24rpx 120rpx;
+}
+
+.loadingIndicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32rpx;
+}
+
+.loadingSpinner {
+  width: 40rpx;
+  height: 40rpx;
+  border: 4rpx solid #E8F3EE;
+  border-top-color: #7EB8A0;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 16rpx;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loadingText {
+  font-size: 26rpx;
+  color: #86909C;
+}
+
+.noMoreData {
+  text-align: center;
+  padding: 32rpx;
+}
+
+.noMoreText {
+  font-size: 24rpx;
+  color: #C9CDD4;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 128rpx 32rpx;
+}
+
+.emptyIcon {
+  font-size: 100rpx;
+  margin-bottom: 24rpx;
+  opacity: 0.5;
+}
+
+.emptyText {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #4E5969;
+  margin-bottom: 12rpx;
+}
+
+.emptyHint {
+  font-size: 26rpx;
+  color: #86909C;
+}
+
+/* 底部操作栏 */
+.bottomBar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 32rpx;
+  background: #FFFFFF;
+  box-shadow: 0 -2rpx 24rpx rgba(0, 0, 0, 0.08);
+  padding-bottom: calc(24rpx + env(safe-area-inset-bottom));
+}
+
+.totalInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.totalCount {
+  font-size: 26rpx;
+  color: #86909C;
+}
+
+.addBtn {
+  padding: 20rpx 48rpx;
+  background: linear-gradient(135deg, #7EB8A0 0%, #A5D4BE 100%);
+  border-radius: 48rpx;
+  transition: all 0.25s ease;
+  box-shadow: 0 8rpx 24rpx rgba(126, 184, 160, 0.4);
+}
+
+.addBtnHover {
+  transform: scale(0.96);
+  box-shadow: 0 4rpx 16rpx rgba(126, 184, 160, 0.3);
+}
+
+.addBtnText {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+/* 日期筛选弹窗 */
+.modalMask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modalContent {
+  width: 640rpx;
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  overflow: hidden;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx;
+  border-bottom: 1rpx solid #F0F2F1;
+}
+
+.modalTitle {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1D2129;
+}
+
+.modalClose {
+  width: 48rpx;
+  height: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  color: #86909C;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.modalCloseHover {
+  background: #F0F2F1;
+}
+
+.modalBody {
+  padding: 32rpx;
+}
+
+.datePickerRow {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.datePickerLabel {
+  width: 160rpx;
+  font-size: 28rpx;
+  color: #4E5969;
+}
+
+.datePickerValue {
+  flex: 1;
+  padding: 16rpx 24rpx;
+  background: #F7F9F8;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  color: #1D2129;
+}
+
+.quickDateOptions {
+  display: flex;
+  gap: 16rpx;
+  margin-top: 16rpx;
+}
+
+.quickDateBtn {
+  flex: 1;
+  padding: 16rpx 0;
+  background: #F0F2F1;
+  border-radius: 12rpx;
+  text-align: center;
+  font-size: 26rpx;
+  color: #4E5969;
+  transition: all 0.2s ease;
+}
+
+.quickDateBtnHover {
+  background: #E8F3EE;
+  color: #7EB8A0;
+}
+
+.quickDateBtnActive {
+  background: linear-gradient(135deg, #7EB8A0 0%, #A5D4BE 100%);
+  color: #FFFFFF;
+  font-weight: 500;
+  box-shadow: 0 4rpx 12rpx rgba(126, 184, 160, 0.3);
+}
+
+.datePickerValueSelected {
+  background: #E8F3EE;
+  color: #7EB8A0;
+  border: 1rpx solid #7EB8A0;
+}
+
+.datePreview {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 20rpx;
+  background: #F7F9F8;
+  border-radius: 12rpx;
+  margin-bottom: 16rpx;
+}
+
+.datePreviewLabel {
+  font-size: 24rpx;
+  color: #86909C;
+  margin-right: 12rpx;
+}
+
+.datePreviewText {
+  font-size: 26rpx;
+  color: #4E5969;
+  font-weight: 500;
+}
+
+.datePreviewIcon {
+  color: #7EB8A0;
+  font-size: 28rpx;
+  margin-right: 12rpx;
+}
+
+.quickDateSection {
+  margin-bottom: 32rpx;
+}
+
+.quickDateSectionTitle {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1D2129;
+  display: block;
+  margin-bottom: 16rpx;
+}
+
+.customDateSection {
+  border-top: 1rpx solid #F0F2F1;
+  padding-top: 24rpx;
+}
+
+.applyDateBtn {
+  margin-top: 24rpx;
+  padding: 24rpx 0;
+  background: linear-gradient(135deg, #7EB8A0 0%, #A5D4BE 100%);
+  border-radius: 16rpx;
+  text-align: center;
+  box-shadow: 0 8rpx 24rpx rgba(126, 184, 160, 0.3);
+  transition: all 0.25s ease;
+}
+
+.applyDateBtnHover {
+  transform: scale(0.98);
+  box-shadow: 0 4rpx 16rpx rgba(126, 184, 160, 0.2);
+}
+
+.applyDateBtnText {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.modalFooter {
+  display: flex;
+  border-top: 1rpx solid #F0F2F1;
+}
+
+.modalBtn {
+  flex: 1;
+  padding: 32rpx;
+  text-align: center;
+  font-size: 30rpx;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.modalBtnCancel {
+  color: #86909C;
+  border-right: 1rpx solid #F0F2F1;
+}
+
+.modalBtnConfirm {
+  color: #7EB8A0;
+}
+
+.modalBtnHover {
+  background: #F7F9F8;
+}
